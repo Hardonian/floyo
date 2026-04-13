@@ -130,7 +130,7 @@
     "@jest/globals": "^29.7.0",
     "@lhci/cli": "^0.13.0",
     "@playwright/test": "^1.40.0",
-    "@sentry/nextjs": "^7.91.0",
+    "@sentry/nextjs": "^10.48.0",
     "@types/node": "^20.10.5",
     "@types/pg": "^8.10.9",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
