@@ -27,7 +27,7 @@ redis>=5.0.1
 hiredis>=2.2.3
 
 # Background Jobs
-celery>=5.3.4
+celery>=5.6.3
 flower>=2.0.1
 
 # Compression
