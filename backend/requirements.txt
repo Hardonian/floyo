@@ -57,7 +57,7 @@ pandas>=2.0.0
 numpy>=1.24.0
 tensorflow>=2.13.0  # or tensorflow-cpu for CPU-only environments
 transformers>=4.30.0  # For transformer models
-torch>=2.0.0  # Alternative to TensorFlow, required by transformers
+torch>=2.11.0  # Alternative to TensorFlow, required by transformers
 scipy>=1.11.0  # For statistical functions
 
 # HTTP Client (for SDK examples and external API calls)
