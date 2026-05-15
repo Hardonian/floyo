@@ -139,7 +139,7 @@
     "eslint-config-next": "^14.0.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-unused-imports": "^4.3.0",
+    "eslint-plugin-unused-imports": "^4.4.1",
     "knip": "^5.68.0",
     "madge": "^6.1.0",
     "pa11y-ci": "^3.1.0",
