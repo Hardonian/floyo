@@ -42,7 +42,7 @@ croniter>=2.0.1
 
 # Security
 pyotp>=2.9.0
-qrcode[pil]>=7.4.2
+qrcode[pil]>=8.2
 cryptography>=41.0.7
 
 # Guardian Privacy System
