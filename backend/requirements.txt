@@ -24,7 +24,7 @@ psutil>=5.9.6
 # Rate Limiting & Caching
 slowapi>=0.1.9
 redis>=5.0.1
-hiredis>=2.2.3
+hiredis>=3.4.0
 
 # Background Jobs
 celery>=5.3.4
