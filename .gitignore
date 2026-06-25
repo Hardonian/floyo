@@ -1,74 +1,35 @@
-# Dependencies
-node_modules/
-.pnp
-.pnp.js
-
-# Testing
-coverage/
-.nyc_output
-
-# Production
-build/
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.egg-info/
 dist/
-.next/
-out/
+build/
+*.egg
 
-# Misc
-.DS_Store
-*.pem
-
-# Debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Local env files
+# Environment
 .env
-.env.local
-.env.*.local
-.env.production
-.env.development.local
+.env.*
+!.env.example
 
-# Vercel
-.vercel
+# Node
+node_modules/
 
-# TypeScript
-*.tsbuildinfo
-next-env.d.ts
-
-# Compliance & Reports (keep structure, ignore sensitive data)
-compliance/audits/*/orchestrator-report.json
-!compliance/audits/.gitkeep
-admin/*.json
-!admin/.gitkeep
-dependency-report.json
-cost_forecast.json
-reliability_trends.json
-SECURITY_COMPLIANCE_REPORT.md
-
-# Security
-security/sbom.json
-*.key
-*.pem
-*.p12
+# Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
 
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
+
+# OS
+.DS_Store
+Thumbs.db
 
 # Logs
-logs/
 *.log
-
-# Temporary files
-tmp/
-temp/
-.cache/
-
-# Docs tidy
-/internal/private/**
-!internal/private/.keep
-/tools/docs-tidy-report.md
