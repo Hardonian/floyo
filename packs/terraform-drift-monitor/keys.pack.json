@@ -1,0 +1,25 @@
+{
+  "id": "terraform-drift-monitor",
+  "name": "Terraform Drift Monitor",
+  "version": "1.0.0",
+  "description": "Automated nightly scans for infrastructure drift with Slack alerting and remediation PRs",
+  "tags": ["terraform", "devops", "monitoring", "automated"],
+  "actions": [
+    {
+      "name": "daily-scan",
+      "kind": "shell",
+      "command": "python3",
+      "args": ["scripts/daily_drift_scan.py"],
+      "description": "Run daily drift scan for all workspaces"
+    },
+    {
+      "name": "single-scan",
+      "kind": "shell",
+      "command": "drift-inspector",
+      "args": ["scan", "${WORKSPACE_PATH}"],
+      "description": "Scan a single Terraform workspace"
+    }
+  ],
+  "author": "Scott Hardie",
+  "license": "MIT"
+}

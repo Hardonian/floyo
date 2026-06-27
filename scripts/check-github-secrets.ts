@@ -9,9 +9,12 @@
  * but it can verify if secrets are referenced in workflows and provide a checklist.
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { glob } from 'glob';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+const globSync = require('glob').sync as (pattern: string) => string[];
 
 interface SecretCheck {
   name: string;
@@ -60,14 +63,14 @@ const requiredSecrets: SecretCheck[] = [
 ];
 
 function checkWorkflowsForSecrets() {
-  const workflowFiles = glob.sync('.github/workflows/**/*.yml');
+  const workflowFiles = globSync('.github/workflows/**/*.yml') as string[];
   
-  workflowFiles.forEach(file => {
+  workflowFiles.forEach((file: string) => {
     try {
       const content = readFileSync(file, 'utf-8');
       requiredSecrets.forEach(secret => {
-        if (content.includes(`$${{ secrets.${secret.name} }}`) || 
-            content.includes(`${{ secrets.${secret.name} }}`) ||
+        if (content.includes(`\${{ secrets.${secret.name} }}`) || 
+            content.includes(`\${{ secrets.${secret.name} }}`) ||
             content.includes(`secrets.${secret.name}`)) {
           secret.foundInWorkflows = true;
         }
