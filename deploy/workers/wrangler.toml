@@ -1,17 +1,17 @@
-name = "ai-lab-audit-api"
+name = "floyo-api"
 main = "src/worker.js"
 compatibility_date = "2024-06-01"
 
 [vars]
 ENVIRONMENT = "production"
-APP_NAME = "ai-lab-audit-api"
+APP_NAME = "floyo-api"
 SCAN_CRON = "0 3 * * *"
 LOG_LEVEL = "INFO"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "ai_lab_audit"
-database_id = "placeholder-id"
+database_name = "floyo"
+database_id = "af69a9c9-a721-4d3c-b17b-f937c4057472"
 
 [triggers]
 crons = ["0 3 * * *"]
