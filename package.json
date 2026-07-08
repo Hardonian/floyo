@@ -119,18 +119,18 @@
     "@octokit/rest": "^20.0.0",
     "@prisma/client": "^5.7.0",
     "@supabase/supabase-js": "^2.81.1",
+    "clsx": "^2.1.0",
     "commander": "^11.1.0",
     "dotenv": "^16.3.1",
-    "zod": "^3.22.4",
-    "clsx": "^2.1.0",
-    "tailwind-merge": "^2.2.0"
+    "tailwind-merge": "^2.2.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@axe-core/cli": "^4.8.0",
     "@jest/globals": "^29.7.0",
-    "@lhci/cli": "^0.13.0",
+    "@lhci/cli": "^0.6.1",
     "@playwright/test": "^1.40.0",
-    "@sentry/nextjs": "^7.91.0",
+    "@sentry/nextjs": "^10.64.0",
     "@types/node": "^20.10.5",
     "@types/pg": "^8.10.9",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -142,14 +142,14 @@
     "eslint-plugin-unused-imports": "^4.3.0",
     "knip": "^5.68.0",
     "madge": "^6.1.0",
-    "pa11y-ci": "^3.1.0",
+    "pa11y-ci": "^4.1.1",
     "pg": "^8.16.3",
     "prisma": "^5.7.0",
     "supabase": "^2.5.0",
     "ts-prune": "^0.10.3",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
-    "vercel": "^39.0.0",
+    "vercel": "^32.3.0",
     "wait-on": "^7.2.0"
   }
 }
