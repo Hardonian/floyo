@@ -93,7 +93,7 @@
     "bench:trend": "node scripts/bench-trend.js",
     "openapi:generate": "tsx scripts/generate-openapi-enhanced.ts",
     "openapi:generate:legacy": "tsx scripts/generate-openapi.ts",
-    "env:validate": "tsx -e \"import { validatePublicEnv } from './frontend/lib/env'; validatePublicEnv(); console.log('✅ Environment variables validated')\"",
+    "env:validate": "tsx -e \"import { validatePublicEnv } from './frontend/lib/env'; validatePublicEnv(); console.log('\u2705 Environment variables validated')\"",
     "api:audit": "tsx scripts/audit-api-endpoints.ts",
     "migrations:align": "tsx scripts/align-migrations.ts",
     "schema:validate": "tsx scripts/validate-schema-alignment.ts",
@@ -117,26 +117,27 @@
   },
   "dependencies": {
     "@octokit/rest": "^20.0.0",
-    "@prisma/client": "^5.7.0",
+    "@prisma/client": "^6.19.3",
     "@supabase/supabase-js": "^2.81.1",
     "commander": "^11.1.0",
     "dotenv": "^16.3.1",
     "zod": "^3.22.4",
     "clsx": "^2.1.0",
-    "tailwind-merge": "^2.2.0"
+    "tailwind-merge": "^2.2.0",
+    "next": "^15.5.20"
   },
   "devDependencies": {
     "@axe-core/cli": "^4.8.0",
     "@jest/globals": "^29.7.0",
-    "@lhci/cli": "^0.13.0",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.40.0",
-    "@sentry/nextjs": "^7.91.0",
+    "@sentry/nextjs": "^10.64.0",
     "@types/node": "^20.10.5",
     "@types/pg": "^8.10.9",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.63.0",
+    "@typescript-eslint/parser": "^8.63.0",
     "depcheck": "^1.4.7",
-    "eslint-config-next": "^14.0.4",
+    "eslint-config-next": "^15.5.20",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-unused-imports": "^4.3.0",
@@ -149,7 +150,7 @@
     "ts-prune": "^0.10.3",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3",
-    "vercel": "^39.0.0",
+    "vercel": "^54.21.1",
     "wait-on": "^7.2.0"
   }
 }
