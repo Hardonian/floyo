@@ -34,7 +34,7 @@ flower>=2.0.1
 gzip-middleware>=0.1.1
 
 # Testing
-faker>=22.0.0
+faker>=40.23.0
 pytest-asyncio>=0.21.1
 
 # Workflow scheduling
