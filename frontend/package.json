@@ -21,7 +21,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1073.0",
     "@aws-sdk/s3-request-presigner": "^3.1073.0",
-    "@hcaptcha/react-hcaptcha": "^1.14.0",
+    "@hcaptcha/react-hcaptcha": "^2.0.2",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.1.1",
     "@lottiefiles/react-lottie-player": "^3.6.0",
