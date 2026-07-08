@@ -1,15 +1,14 @@
 # GitHub Secrets Verification Checklist
 
-**Generated:** 2025-01-20  
-**Purpose:** Verify all required GitHub Secrets are configured for CI/CD
-
----
+**Generated:** 6/26/2026
 
 ## Required Secrets
+
 
 ### 1. VERCEL_TOKEN
 
 - **Required:** ✅ YES
+- **Found in Workflows:** ✅ YES
 - **Description:** Vercel deployment token for CI/CD
 - **How to Get:** Get from https://vercel.com/account/tokens → Create Token
 - **Status:** [ ] Not Set | [ ] Set | [ ] Verified
@@ -18,14 +17,14 @@
 1. Go to GitHub → Repository → Settings → Secrets and variables → Actions
 2. Click "New repository secret"
 3. Name: `VERCEL_TOKEN`
-4. Value: [Get from Vercel Dashboard → Account → Tokens]
+4. Value: [Get from instructions above]
 5. Click "Add secret"
 
----
 
 ### 2. VERCEL_ORG_ID
 
 - **Required:** ✅ YES
+- **Found in Workflows:** ✅ YES
 - **Description:** Vercel organization ID
 - **How to Get:** Get from Vercel Dashboard → Organization Settings → General
 - **Status:** [ ] Not Set | [ ] Set | [ ] Verified
@@ -34,14 +33,14 @@
 1. Go to GitHub → Repository → Settings → Secrets and variables → Actions
 2. Click "New repository secret"
 3. Name: `VERCEL_ORG_ID`
-4. Value: [Get from Vercel Dashboard → Organization Settings]
+4. Value: [Get from instructions above]
 5. Click "Add secret"
 
----
 
 ### 3. VERCEL_PROJECT_ID
 
 - **Required:** ✅ YES
+- **Found in Workflows:** ✅ YES
 - **Description:** Vercel project ID
 - **How to Get:** Get from Vercel Dashboard → Project Settings → General
 - **Status:** [ ] Not Set | [ ] Set | [ ] Verified
@@ -50,14 +49,14 @@
 1. Go to GitHub → Repository → Settings → Secrets and variables → Actions
 2. Click "New repository secret"
 3. Name: `VERCEL_PROJECT_ID`
-4. Value: [Get from Vercel Dashboard → Project Settings]
+4. Value: [Get from instructions above]
 5. Click "Add secret"
 
----
 
 ### 4. SUPABASE_ACCESS_TOKEN
 
 - **Required:** ✅ YES
+- **Found in Workflows:** ✅ YES
 - **Description:** Supabase access token for migrations
 - **How to Get:** Get from https://supabase.com/dashboard/account/tokens → Generate New Token
 - **Status:** [ ] Not Set | [ ] Set | [ ] Verified
@@ -66,14 +65,14 @@
 1. Go to GitHub → Repository → Settings → Secrets and variables → Actions
 2. Click "New repository secret"
 3. Name: `SUPABASE_ACCESS_TOKEN`
-4. Value: [Get from Supabase Dashboard → Account → Access Tokens]
+4. Value: [Get from instructions above]
 5. Click "Add secret"
 
----
 
 ### 5. SUPABASE_PROJECT_REF
 
 - **Required:** ✅ YES
+- **Found in Workflows:** ✅ YES
 - **Description:** Supabase project reference ID
 - **How to Get:** Get from Supabase Dashboard → Settings → General → Reference ID
 - **Status:** [ ] Not Set | [ ] Set | [ ] Verified
@@ -82,10 +81,10 @@
 1. Go to GitHub → Repository → Settings → Secrets and variables → Actions
 2. Click "New repository secret"
 3. Name: `SUPABASE_PROJECT_REF`
-4. Value: [Get from Supabase Dashboard → Settings → General]
+4. Value: [Get from instructions above]
 5. Click "Add secret"
 
----
+
 
 ## Verification Steps
 
@@ -125,3 +124,4 @@ After setting secrets, test by:
 2. Manually verify secrets in GitHub Settings
 3. Test deployments to ensure secrets work
 4. Update this checklist with verification status
+

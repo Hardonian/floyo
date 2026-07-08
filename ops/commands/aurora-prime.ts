@@ -208,7 +208,7 @@ async function verifySecretsAlignment(fix: boolean = false): Promise<{
             if (!envSection.includes(secret)) {
               content = content.replace(
                 envMatch[0],
-                `env:\n${envSection}      ${secret}: ${{ secrets.${secret} }}\n`
+                `env:\n${envSection}      ${secret}: \${{ secrets.${secret} }}\n`
               );
               fs.writeFileSync(deployWorkflow, content);
               fixes.push(`Added ${secret} to deploy-main.yml`);
