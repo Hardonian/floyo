@@ -61,7 +61,7 @@ torch>=2.0.0  # Alternative to TensorFlow, required by transformers
 scipy>=1.11.0  # For statistical functions
 
 # HTTP Client (for SDK examples and external API calls)
-requests>=2.31.0
+requests>=2.34.2
 
 # Payment Processing (for webhook verification)
 stripe>=7.0.0  # Optional but recommended for Stripe webhooks
