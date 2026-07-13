@@ -64,7 +64,7 @@ scipy>=1.11.0  # For statistical functions
 requests>=2.34.2
 
 # Payment Processing (for webhook verification)
-stripe>=7.0.0  # Optional but recommended for Stripe webhooks
+stripe>=15.3.0  # Optional but recommended for Stripe webhooks
 
 # Async HTTP (optional, for async HTTP requests)
 aiohttp>=3.9.0
