@@ -137,7 +137,7 @@
     "@typescript-eslint/eslint-plugin": "^8.63.0",
     "@typescript-eslint/parser": "^8.63.0",
     "depcheck": "^1.4.7",
-    "eslint-config-next": "^15.5.20",
+    "eslint-config-next": "^16.2.10",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-unused-imports": "^4.3.0",
