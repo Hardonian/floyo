@@ -19,7 +19,7 @@ httpx>=0.25.1
 
 # Logging & Monitoring
 sentry-sdk[fastapi]>=1.40.0
-psutil>=5.9.6
+psutil>=7.2.2
 
 # Rate Limiting & Caching
 slowapi>=0.1.9
