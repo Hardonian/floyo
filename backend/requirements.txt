@@ -54,7 +54,7 @@ sendgrid>=6.12.5  # Optional: for SendGrid email service
 # Machine Learning & Data Science
 scikit-learn>=1.9.0
 pandas>=2.0.0
-numpy>=1.24.0
+numpy>=2.2.6
 tensorflow>=2.13.0  # or tensorflow-cpu for CPU-only environments
 transformers>=4.30.0  # For transformer models
 torch>=2.0.0  # Alternative to TensorFlow, required by transformers
