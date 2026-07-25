@@ -1,63 +1,7 @@
-# CODEOWNERS - Auto-assignment for parallel PR reviews
-# Updated for Phase 1 leverage point: Parallelize PR Reviews
-# Enables parallel reviews by assigning multiple reviewers per area
+# Hardonian Code Owners
+# Default owner for everything
+@Hardonian
 
-# Core Infrastructure & Security (require 2 reviewers)
-/backend/config.py                    @security-team
-/backend/database.py                   @database-team
-/backend/main.py                       @backend-team
-/infra/                                @devops-team
+# Default catch-all for any file not matched below
+* @Hardonian
 
-# Security & Authentication (require security review)
-*SECRET_KEY*                           @security-team
-*CORS*                                 @security-team
-*JWT*                                  @security-team
-/backend/auth*.py                      @security-team @backend-team
-/backend/input_validation.py           @security-team @backend-team
-
-# Database & Models (require database review)
-/database/                             @database-team
-/migrations/                           @database-team
-/alembic.ini                           @database-team
-/prisma/                               @database-team
-
-# Backend Services (parallel reviews enabled)
-/backend/                              @backend-team
-  # Allow any backend team member to review
-  # Multiple reviewers can approve in parallel
-
-# Frontend (parallel reviews enabled)
-/frontend/                             @frontend-team
-  # Allow any frontend team member to review
-  # Multiple reviewers can approve in parallel
-
-# Ops & Agent Engine (parallel reviews enabled)
-/ops/                                  @devops-team
-/agent-engine/                         @devops-team
-/unified-agent/                        @devops-team
-
-# Systems & Reports (architecture review)
-/systems/                              @architecture-team
-/reports/                              @architecture-team
-/docs/                                 @architecture-team
-
-# CI/CD & Workflows (devops review)
-/.github/workflows/                    @devops-team
-/.github/CODEOWNERS                    @devops-team @architecture-team
-
-# Configuration Files (require review)
-/.env.example                          @devops-team @security-team
-/docker-compose.yml                    @devops-team
-/Dockerfile.*                          @devops-team
-/package.json                          @devops-team @backend-team @frontend-team
-/tsconfig.json                         @frontend-team @backend-team
-
-# Design & Copy (design review)
-/design/                               @frontend-team
-/copy/                                 @frontend-team
-
-# Tests (any team member)
-/tests/                                @backend-team @frontend-team
-
-# Default: Require at least one reviewer (parallel reviews enabled)
-*                                      @backend-team @frontend-team @devops-team

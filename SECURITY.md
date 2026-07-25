@@ -1,23 +1,24 @@
 # Security Policy
 
-Thanks for helping keep **floyo** secure.
-
-## Supported Versions
-
-Security updates are provided for the latest active branch (`main`).
-
 ## Reporting a Vulnerability
 
-- Please do **not** open public issues for security vulnerabilities.
-- Report privately via GitHub Security Advisories (preferred) or direct maintainer contact.
-- Include reproduction steps, impact, and suggested mitigation if available.
+If you discover a security vulnerability within this project, please report it responsibly.
 
-## Response Targets
+**Do NOT open a public GitHub issue for security vulnerabilities.**
 
-- Initial acknowledgment: within 72 hours
-- Triage status update: within 7 days
-- Remediation timeline: based on severity and exploitability
+Email security issues to: **security@hardonia.store**
 
-## Disclosure
+Please include:
+- Description of the vulnerability
+- Steps to reproduce
+- Potential impact
+- Suggested fix (if any)
 
-We follow coordinated disclosure and will credit reporters when appropriate.
+## Response
+
+We aim to acknowledge receipt within 48 hours and provide a remediation timeline within 7 days.
+
+## Scope
+
+This security policy applies to the latest release of this project.
+
