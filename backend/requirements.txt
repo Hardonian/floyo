@@ -67,7 +67,7 @@ requests>=2.34.2
 stripe>=7.0.0  # Optional but recommended for Stripe webhooks
 
 # Async HTTP (optional, for async HTTP requests)
-aiohttp>=3.9.0
+aiohttp>=3.14.1
 
 # Date/Time utilities
 python-dateutil>=2.8.2
