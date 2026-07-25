@@ -115,6 +115,15 @@
     "seed:run": "bash scripts/run-seed-and-migration.sh",
     "migration:apply": "tsx scripts/apply-nps-migration.ts"
   },
+  "overrides": {
+    "dompurify": ">=3.4.12",
+    "brace-expansion": ">=5.0.7",
+    "adm-zip": ">=0.6.0",
+    "minimatch": ">=10.2.3",
+    "postcss": ">=8.5.10",
+    "js-yaml": ">=4.3.0",
+    "@babel/core": ">=7.29.6"
+  },
   "dependencies": {
     "@octokit/rest": "^20.0.0",
     "@prisma/client": "^6.19.3",
