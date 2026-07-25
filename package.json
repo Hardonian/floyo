@@ -124,7 +124,7 @@
     "zod": "^3.22.4",
     "clsx": "^2.1.0",
     "tailwind-merge": "^2.2.0",
-    "next": "^15.5.20"
+    "next": "^16.2.10"
   },
   "devDependencies": {
     "@axe-core/cli": "^4.8.0",
