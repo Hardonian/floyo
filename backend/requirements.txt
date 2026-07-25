@@ -70,7 +70,7 @@ stripe>=7.0.0  # Optional but recommended for Stripe webhooks
 aiohttp>=3.14.1
 
 # Date/Time utilities
-python-dateutil>=2.8.2
+python-dateutil>=2.9.0.post0
 pytz>=2026.2
 
 # Additional SQLAlchemy utilities
