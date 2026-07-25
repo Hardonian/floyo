@@ -74,4 +74,4 @@ python-dateutil>=2.8.2
 pytz>=2023.3
 
 # Additional SQLAlchemy utilities
-sqlalchemy-utils>=0.41.0
+sqlalchemy-utils>=0.42.1
