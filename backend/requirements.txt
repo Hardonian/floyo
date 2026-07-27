@@ -23,7 +23,7 @@ psutil>=7.2.2
 
 # Rate Limiting & Caching
 slowapi>=0.1.9
-redis>=5.0.1
+redis>=8.0.1
 hiredis>=3.4.0
 
 # Background Jobs
