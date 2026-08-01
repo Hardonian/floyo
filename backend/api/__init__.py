@@ -3,19 +3,18 @@
 from fastapi import FastAPI
 
 from backend.api import (
-    auth, events, patterns, suggestions, stats, config,
-    telemetry, insights, organizations, workflows, integrations,
-    billing, admin, enterprise, growth, operational, security,
+    auth, events, patterns, suggestions, stats,
+    telemetry, organizations, workflows, billing, admin, enterprise, growth, operational, security,
     privacy, autonomous, v1
 )
 from backend.api.analytics import dashboard as analytics_dashboard
-from backend.api.integrations import zapier, tiktok, meta
 from backend.api.marketplace import __init__ as marketplace_module
 from backend.analytics import router as analytics_router
 from backend.api.referral import router as referral_router
 from backend.api.growth import router as growth_metrics_router
 from backend.api.experiments import router as experiments_router
 from backend.api.share import router as share_router
+from backend.endpoints.insights import router as insights_router
 
 
 def register_routes(app: FastAPI):
@@ -27,12 +26,13 @@ def register_routes(app: FastAPI):
     app.include_router(patterns.router)
     app.include_router(suggestions.router)
     app.include_router(stats.router)
-    app.include_router(config.router)
     app.include_router(telemetry.router)
-    app.include_router(insights.router)
+    app.include_router(insights_router)
     app.include_router(organizations.router)
     app.include_router(workflows.router)
-    app.include_router(integrations.router)
+    # Import integrations router locally to avoid circular import
+    from backend.api.integrations_core import router as integrations_router
+    app.include_router(integrations_router)
     app.include_router(billing.router)
     app.include_router(admin.router)
     app.include_router(enterprise.router)
@@ -58,14 +58,17 @@ def register_routes(app: FastAPI):
     # Share routes
     app.include_router(share_router)
     
-    # Integration-specific routes
-    app.include_router(zapier.router)
-    app.include_router(tiktok.router)
-    app.include_router(meta.router)
+    # Integration-specific routes (from integrations subdirectory)
+    from backend.api.integrations_sub.zapier import router as zapier_router
+    from backend.api.integrations_sub.tiktok import router as tiktok_router
+    from backend.api.integrations_sub.meta import router as meta_router
+    app.include_router(zapier_router)
+    app.include_router(tiktok_router)
+    app.include_router(meta_router)
     
     # Marketplace routes
-    from backend.api.marketplace import __init__ as marketplace
-    app.include_router(marketplace.router)
+    from backend.api.marketplace import router as marketplace_router
+    app.include_router(marketplace_router)
     
     # Versioned routes (v1)
     app.include_router(v1.workflows.router, prefix="/api/v1")

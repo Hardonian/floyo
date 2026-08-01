@@ -21,7 +21,7 @@ router = APIRouter(prefix="/api/insights", tags=["insights"])
 
 
 @router.get("")
-@cached(ttl=300, key_prefix="insights")
+@cached(ttl_seconds=300, key_prefix="insights")
 async def get_insights(
     days_back: int = Query(30, ge=1, le=365),
     current_user: User = Depends(get_current_user),
@@ -58,7 +58,7 @@ async def get_insights(
 
 
 @router.get("/patterns")
-@cached(ttl=300, key_prefix="patterns")
+@cached(ttl_seconds=300, key_prefix="patterns")
 async def get_patterns(
     days_back: int = Query(30, ge=1, le=365),
     current_user: User = Depends(get_current_user),
@@ -127,7 +127,7 @@ async def get_patterns(
 
 
 @router.get("/stats")
-@cached(ttl=300, key_prefix="stats")
+@cached(ttl_seconds=300, key_prefix="stats")
 async def get_stats(
     days_back: int = Query(30, ge=1, le=365),
     current_user: User = Depends(get_current_user),

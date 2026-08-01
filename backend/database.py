@@ -8,11 +8,16 @@ from typing import Generator
 import logging
 from backend.config import settings
 from backend.circuit_breaker import db_circuit_breaker
+from backend.sqlite_shim import SQLiteJSONB, SQLitePGUUID
 
 logger = logging.getLogger(__name__)
 
 # Database URL from settings
 DATABASE_URL = settings.database_url
+
+# Import and register SQLite shims for testing
+from sqlalchemy.dialects.sqlite import base as sqlite_base
+# The @compiles decorators in sqlite_shim.py will handle the type compilation
 
 # For SQLite (development/testing)
 if DATABASE_URL.startswith("sqlite"):

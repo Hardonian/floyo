@@ -15,6 +15,7 @@ from database.models import User
 # Security
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
+optional_security = HTTPBearer(auto_error=False)
 
 # Configuration - exported for use in endpoints
 SECRET_KEY = settings.secret_key
@@ -29,7 +30,9 @@ __all__ = [
     "create_refresh_token",
     "get_current_user",
     "get_optional_user",
+    "get_current_user_optional",  # alias
     "security",
+    "optional_security",
     "pwd_context",
     "SECRET_KEY",
     "ALGORITHM",
@@ -98,7 +101,7 @@ async def get_current_user(
 
 
 async def get_optional_user(
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security.auto_error(False)),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(optional_security),
     db: Session = Depends(get_db)
 ) -> Optional[User]:
     """Get the current authenticated user from JWT token, or None if not authenticated."""
@@ -116,3 +119,7 @@ async def get_optional_user(
     
     user = db.query(User).filter(User.id == payload.get("sub")).first()
     return user
+
+
+# Alias for backward compatibility
+get_current_user_optional = get_optional_user

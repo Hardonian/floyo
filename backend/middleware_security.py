@@ -1,5 +1,4 @@
-"""
-Security Middleware Integration
+"""Security Middleware Integration
 Integrates security hardening into FastAPI middleware stack
 """
 
@@ -7,11 +6,16 @@ from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 import logging
+from backend.security import SecurityAuditor
 from backend.security_hardening import (
-    SecurityMiddleware,
-    IPBlockingMiddleware,
-    ThreatDetection,
-    SecurityAuditor
+    rate_limit_by_ip,
+    validate_input_sanitization,
+    validate_hmac_signature,
+    validate_csrf_token,
+    sanitize_filename,
+    validate_file_upload,
+    generate_secure_token,
+    hash_sensitive_data
 )
 from backend.performance_optimization import (
     optimize_response,
@@ -21,6 +25,56 @@ from backend.database import get_db
 from backend.config import settings
 
 logger = logging.getLogger(__name__)
+
+# Simple in-memory IP blocking (for production, use Redis/database)
+_blocked_ips: set = set()
+_failed_attempts: dict = {}
+
+class IPBlockingMiddleware:
+    """Simple IP blocking and failure tracking."""
+    
+    @staticmethod
+    def get_client_ip(request: Request) -> str:
+        """Get client IP from request."""
+        client_ip = request.client.host if request.client else "unknown"
+        forwarded_for = request.headers.get("X-Forwarded-For")
+        if forwarded_for:
+            client_ip = forwarded_for.split(",")[0].strip()
+        return client_ip
+    
+    @staticmethod
+    def is_ip_blocked(ip: str) -> bool:
+        return ip in _blocked_ips
+    
+    @staticmethod
+    def record_failure(ip: str):
+        _failed_attempts[ip] = _failed_attempts.get(ip, 0) + 1
+        if _failed_attempts[ip] >= 10:
+            _blocked_ips.add(ip)
+            logger.warning(f"IP {ip} blocked after {_failed_attempts[ip]} failures")
+    
+    @staticmethod
+    def record_success(ip: str):
+        if ip in _failed_attempts:
+            _failed_attempts[ip] = max(0, _failed_attempts[ip] - 1)
+            if _failed_attempts[ip] == 0:
+                del _failed_attempts[ip]
+
+class ThreatDetection:
+    """Basic threat detection for requests."""
+    
+    @staticmethod
+    def scan_request(request: Request) -> list:
+        threats = []
+        # Check for SQL injection patterns in query params
+        for key, value in request.query_params.items():
+            if any(pattern in value.lower() for pattern in ['union', 'select', 'insert', 'delete', 'drop', '--', ';']):
+                threats.append(f"sql_injection_in_param_{key}")
+        return threats
+    
+    @staticmethod
+    def is_threat_detected(threats: list) -> bool:
+        return len(threats) > 0
 
 
 class ComprehensiveSecurityMiddleware(BaseHTTPMiddleware):

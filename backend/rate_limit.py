@@ -1,5 +1,3 @@
-"""Rate limiting middleware for FastAPI with IP-based throttling and endpoint-specific limits."""
-
 from typing import Callable, Optional, Dict
 from fastapi import Request, HTTPException, status
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -80,47 +78,39 @@ SUSPICIOUS_THRESHOLDS = {
 }
 
 
-def get_rate_limit_exceeded_handler():
+# Custom rate limit exceeded handler (doesn't use slowapi's decorator which has issues)
+def rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     """
-    Get rate limit exceeded exception handler with proper error response.
+    Handle rate limit exceeded exceptions with informative error messages.
     
-    Returns:
-        Callable: Exception handler function
+    Args:
+        request: FastAPI request object
+        exc: RateLimitExceeded exception
+        
+    Raises:
+        HTTPException: 429 Too Many Requests with retry-after header
     """
-    @_rate_limit_exceeded_handler
-    def rate_limit_handler(request: Request, exc: RateLimitExceeded):
-        """
-        Handle rate limit exceeded exceptions with informative error messages.
-        
-        Args:
-            request: FastAPI request object
-            exc: RateLimitExceeded exception
-            
-        Raises:
-            HTTPException: 429 Too Many Requests with retry-after header
-        """
-        # Log suspicious activity
-        client_ip = get_remote_address(request)
-        logger.warning(
-            f"Rate limit exceeded for IP {client_ip} on {request.url.path}",
-            extra={
-                "ip": client_ip,
-                "path": request.url.path,
-                "method": request.method,
-                "retry_after": exc.retry_after,
-            }
-        )
-        
-        raise HTTPException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail={
-                "error": "Rate limit exceeded",
-                "message": f"Too many requests. Please try again later.",
-                "retry_after_seconds": exc.retry_after if exc.retry_after else 60,
-            },
-            headers={"Retry-After": str(exc.retry_after) if exc.retry_after else "60"}
-        )
-    return rate_limit_handler
+    # Log suspicious activity
+    client_ip = get_remote_address(request)
+    logger.warning(
+        f"Rate limit exceeded for IP {client_ip} on {request.url.path}",
+        extra={
+            "ip": client_ip,
+            "path": request.url.path,
+            "method": request.method,
+            "retry_after": exc.retry_after,
+        }
+    )
+    
+    raise HTTPException(
+        status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+        detail={
+            "error": "Rate limit exceeded",
+            "message": f"Too many requests. Please try again later.",
+            "retry_after_seconds": exc.retry_after if exc.retry_after else 60,
+        },
+        headers={"Retry-After": str(exc.retry_after) if exc.retry_after else "60"}
+    )
 
 
 def get_endpoint_rate_limit(endpoint_category: str, endpoint_name: str) -> Optional[str]:

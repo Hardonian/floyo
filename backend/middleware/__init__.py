@@ -8,7 +8,7 @@ from slowapi.errors import RateLimitExceeded
 
 from backend.config import settings
 from backend.logging_config import get_logger
-from backend.rate_limit import limiter, get_rate_limit_exceeded_handler
+from backend.rate_limit import limiter, rate_limit_exceeded_handler
 from backend.request_id import RequestIDMiddleware
 from backend.middleware_security import ComprehensiveSecurityMiddleware
 from backend.csrf_protection import CSRFProtectionMiddleware
@@ -98,7 +98,7 @@ def setup_middleware(app: FastAPI) -> None:
     
     # Rate limiting
     app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, get_rate_limit_exceeded_handler())
+    app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
     
     # Error handling middleware (catches errors before they reach exception handlers)
     from backend.middleware.error_middleware import ErrorHandlingMiddleware

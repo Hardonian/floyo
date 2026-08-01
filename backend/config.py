@@ -1,11 +1,13 @@
 """Centralized configuration management."""
 from pydantic_settings import BaseSettings
 from typing import Optional, List
-from pydantic import Field, validator
+from pydantic import Field, field_validator
+from pydantic.config import ConfigDict
 import os
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
@@ -14,13 +16,13 @@ class Settings(BaseSettings):
     environment: str = Field(default="development", description="Environment: development, staging, production")
     
     # Database
-    database_url: str = Field(..., description="PostgreSQL database URL")
+    database_url: str = Field(default="sqlite:///./floyo.db", description="PostgreSQL database URL")
     database_pool_size: int = Field(default=10, description="Database connection pool size")
     database_max_overflow: int = Field(default=20, description="Database connection pool max overflow")
     database_pool_recycle: int = Field(default=3600, description="Database connection pool recycle time (seconds)")
     
     # Security
-    secret_key: str = Field(..., description="JWT secret key (must be strong in production)")
+    secret_key: str = Field(default="dev-secret-key-change-in-production-0000000000000000", description="JWT secret key (must be strong in production)")
     algorithm: str = Field(default="HS256", description="JWT algorithm")
     access_token_expire_minutes: int = Field(default=30, description="Access token expiration (minutes)")
     refresh_token_expire_days: int = Field(default=7, description="Refresh token expiration (days)")
@@ -58,24 +60,27 @@ class Settings(BaseSettings):
     celery_broker_url: Optional[str] = Field(default=None, description="Celery broker URL (Redis)")
     celery_result_backend: Optional[str] = Field(default=None, description="Celery result backend URL")
     
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
-    
-    @validator("cors_origins")
+    model_config = ConfigDict(
+        env_file = ".env",
+        env_file_encoding = "utf-8",
+        case_sensitive = False,
+    )
+
+    @field_validator("cors_origins")
+    @classmethod
     def parse_cors_origins(cls, v):
         """Parse CORS origins from comma-separated string."""
         return [origin.strip() for origin in v.split(",")]
-    
-    @validator("environment")
+
+    @field_validator("environment")
+    @classmethod
     def validate_environment(cls, v):
         """Validate environment value."""
         allowed = ["development", "staging", "production"]
         if v not in allowed:
             raise ValueError(f"environment must be one of {allowed}")
         return v
-    
+
     def validate_production(self):
         """Validate production-specific settings."""
         if self.environment != "production":

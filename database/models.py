@@ -97,7 +97,7 @@ class Pattern(Base):
     count = Column(Integer, default=0)
     last_used = Column(TIMESTAMP(timezone=True), nullable=True)
     tools = Column(PGARRAY(String), nullable=True)
-    metadata = Column(JSONB, nullable=True)
+    pattern_metadata = Column(JSONB, nullable=True)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -137,7 +137,7 @@ class TemporalPattern(Base):
     count = Column(Integer, default=1)
     avg_time_gap = Column(Float, nullable=True)
     files = Column(JSONB, nullable=True)
-    metadata = Column(JSONB, nullable=True)
+    temporal_metadata = Column(JSONB, nullable=True)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -524,14 +524,14 @@ class UsageMetric(Base):
 class BillingEvent(Base):
     """Billing events (invoices, payments, refunds)."""
     __tablename__ = "billing_events"
-    
+
     id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
     subscription_id = Column(PGUUID(as_uuid=True), ForeignKey("subscriptions.id", ondelete="CASCADE"), nullable=False, index=True)
     event_type = Column(String(50), nullable=False)  # invoice, payment, refund, charge_failed, etc.
     amount = Column(Float, nullable=False)
     currency = Column(String(10), default="USD")
     status = Column(String(50), default="pending")  # pending, completed, failed, refunded
-    metadata = Column(JSONB, nullable=True)  # Additional event data
+    billing_metadata = Column(JSONB, nullable=True)  # Additional event data
     external_id = Column(String(255), nullable=True, index=True)  # Stripe invoice ID, etc.
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), index=True)
     processed_at = Column(TIMESTAMP(timezone=True), nullable=True)
@@ -661,39 +661,39 @@ class SecurityAudit(Base):
 class GuardianEvent(Base):
     """Guardian privacy monitoring events."""
     __tablename__ = "guardian_events"
-    
+
     id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
     event_id = Column(String(255), unique=True, nullable=False, index=True)
     user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
-    
+
     # Event details
     event_type = Column(String(100), nullable=False, index=True)
     scope = Column(String(50), nullable=False)  # user, app, api, external
     data_class = Column(String(50), nullable=False)  # telemetry, location, audio, etc.
-    
+
     # Description
     description = Column(Text, nullable=True)
     data_touched = Column(JSONB, nullable=True)
     purpose = Column(Text, nullable=True)
-    
+
     # Risk assessment
     risk_level = Column(String(50), nullable=False, index=True)  # low, medium, high, critical
     risk_score = Column(Float, nullable=False, default=0.0)
     risk_factors = Column(PGARRAY(String), nullable=True)
-    
+
     # Guardian action
     guardian_action = Column(String(50), nullable=False)  # allow, mask, redact, block, alert
     action_reason = Column(Text, nullable=True)
-    
+
     # User context
     user_decision = Column(String(50), nullable=True)
     session_id = Column(String(255), nullable=True, index=True)
     mfa_required = Column(Boolean, default=False)
-    
+
     # Metadata
     source = Column(String(255), nullable=True)
-    metadata = Column(JSONB, nullable=True)
-    
+    guardian_metadata = Column(JSONB, nullable=True)
+
     # Timestamps
     timestamp = Column(TIMESTAMP(timezone=True), server_default=func.now(), index=True)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
@@ -832,7 +832,7 @@ class Prediction(Base):
 class Notification(Base):
     """Notification model for in-app and email notifications."""
     __tablename__ = "notifications"
-    
+
     id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
     user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     notification_type = Column(String(50), nullable=False)  # info, success, warning, error
@@ -844,9 +844,51 @@ class Notification(Base):
     action_label = Column(String(100), nullable=True)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), index=True)
     read_at = Column(TIMESTAMP(timezone=True), nullable=True)
-    
+
     user = relationship("User", foreign_keys=[user_id])
-    
+
     __table_args__ = (
         Index('idx_notifications_user_read', 'user_id', 'read', 'created_at'),
+    )
+
+
+class UTMTrack(Base):
+    """UTM tracking for attribution and growth metrics."""
+    __tablename__ = "utm_tracks"
+
+    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
+    source = Column(String(100), nullable=True, index=True)  # google, facebook, twitter, newsletter, etc.
+    medium = Column(String(100), nullable=True, index=True)  # cpc, organic, email, referral, etc.
+    campaign = Column(String(255), nullable=True, index=True)
+    term = Column(String(255), nullable=True)
+    content = Column(String(255), nullable=True)
+    referrer = Column(Text, nullable=True)
+    landing_page = Column(String(500), nullable=True)
+    timestamp = Column(TIMESTAMP(timezone=True), server_default=func.now(), index=True)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+
+    user = relationship("User", foreign_keys=[user_id])
+
+    __table_args__ = (
+        Index('idx_utm_tracks_user_timestamp', 'user_id', 'timestamp'),
+        Index('idx_utm_tracks_source_medium', 'source', 'medium'),
+    )
+
+
+class PrivacyPrefs(Base):
+    """User privacy preferences."""
+    __tablename__ = "privacy_prefs"
+
+    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    monitoring_enabled = Column(Boolean, default=False)
+    data_retention_days = Column(Integer, default=14)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    user = relationship("User", foreign_keys=[user_id])
+
+    __table_args__ = (
+        Index('idx_privacy_prefs_user', 'user_id', unique=True),
     )
