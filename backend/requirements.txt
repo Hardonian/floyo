@@ -46,7 +46,7 @@ qrcode[pil]>=8.2
 cryptography>=41.0.7
 
 # Guardian Privacy System
-pyyaml>=6.0.1
+pyyaml>=6.0.3
 
 # Email (optional - for password reset and notifications)
 sendgrid>=6.12.5  # Optional: for SendGrid email service
