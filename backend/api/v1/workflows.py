@@ -6,15 +6,16 @@ from typing import List, Optional
 from uuid import UUID
 from pydantic import BaseModel
 
-from database import get_db
+from backend.database import get_db
 from database.models import User, Workflow, WorkflowExecution
-from backend.security import get_current_user
+from backend.auth.utils import get_current_user
 from backend.rate_limit import limiter, RATE_LIMIT_PER_MINUTE
 import logging
 
 logger = logging.getLogger(__name__)
 
 workflow_router = APIRouter(prefix="/api/v1/workflows", tags=["workflows"])
+router = workflow_router
 
 
 class WorkflowStep(BaseModel):

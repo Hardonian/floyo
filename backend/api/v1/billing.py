@@ -6,17 +6,18 @@ from typing import Optional
 from uuid import UUID
 from datetime import datetime
 
-from database import get_db
+from backend.database import get_db
 from database.models import User, Subscription, SubscriptionPlan, BillingEvent
 from backend.monetization import SubscriptionManager, BillingManager
 from backend.stripe_integration import StripeIntegration
-from backend.security import get_current_user
+from backend.auth.utils import get_current_user
 from backend.rate_limit import limiter, RATE_LIMIT_PER_MINUTE
 import logging
 
 logger = logging.getLogger(__name__)
 
 billing_router = APIRouter(prefix="/api/v1/billing", tags=["billing"])
+router = billing_router
 
 
 @billing_router.post("/subscribe")

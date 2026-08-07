@@ -7,7 +7,7 @@ Organizes v1 API routes into logical groups for better maintainability.
 from fastapi import APIRouter
 
 # Import route modules (these re-export the base routers)
-from backend.api.v1 import auth, events, insights, patterns, telemetry
+from backend.api.v1 import auth, billing, events, insights, patterns, telemetry, workflows
 
 # Create v1 router
 v1_router = APIRouter(prefix="/api/v1", tags=["v1"])
