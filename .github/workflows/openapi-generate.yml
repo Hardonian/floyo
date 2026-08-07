@@ -60,8 +60,9 @@ jobs:
 
       - name: Upload OpenAPI spec
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: openapi-spec
           path: openapi.json
           retention-days: 30
+          if-no-files-found: warn

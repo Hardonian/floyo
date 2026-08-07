@@ -32,10 +32,11 @@ jobs:
           ANALYZE: true
 
       - name: Upload bundle report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: bundle-report
           path: frontend/.next/analyze/*
+          if-no-files-found: warn
 
       - name: Comment PR (if applicable)
         if: github.event_name == 'pull_request'

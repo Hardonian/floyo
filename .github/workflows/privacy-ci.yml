@@ -56,7 +56,7 @@ jobs:
   policy-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Verify Policy File Exists
         run: |
           if [ ! -f "docs/privacy/monitoring-policy.md" ]; then
