@@ -146,7 +146,7 @@
     "@supabase/supabase-js": "^2.111.0",
     "commander": "^11.1.0",
     "dotenv": "^16.3.1",
-    "zod": "^3.22.4",
+    "zod": "^4.4.3",
     "clsx": "^2.1.0",
     "tailwind-merge": "^2.2.0",
     "next": "^16.2.11"
