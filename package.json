@@ -159,8 +159,8 @@
     "@sentry/nextjs": "^10.64.0",
     "@types/node": "^20.10.5",
     "@types/pg": "^8.10.9",
-    "@typescript-eslint/eslint-plugin": "^8.63.0",
-    "@typescript-eslint/parser": "^8.63.0",
+    "@typescript-eslint/eslint-plugin": "^8.67.0",
+    "@typescript-eslint/parser": "^8.67.0",
     "depcheck": "^1.4.7",
     "eslint-config-next": "^15.5.20",
     "eslint-config-prettier": "^9.1.0",
@@ -174,7 +174,7 @@
     "supabase": "^2.5.0",
     "ts-prune": "^0.10.3",
     "tsx": "^4.7.0",
-    "typescript": "^5.3.3",
+    "typescript": "^6.0.3",
     "vercel": "^56.3.2",
     "wait-on": "^7.2.0"
   }
