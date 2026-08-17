@@ -143,7 +143,7 @@
   "dependencies": {
     "@octokit/rest": "^20.0.0",
     "@prisma/client": "^6.19.3",
-    "@supabase/supabase-js": "^2.111.0",
+    "@supabase/supabase-js": "^2.112.3",
     "commander": "^11.1.0",
     "dotenv": "^16.3.1",
     "zod": "^3.22.4",
