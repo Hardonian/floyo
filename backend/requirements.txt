@@ -1,7 +1,7 @@
 # Backend API Dependencies
 fastapi>=0.141.1
 uvicorn[standard]>=0.51.0
-sqlalchemy>=2.0.23
+sqlalchemy>=2.0.52
 psycopg2-binary>=2.9.12
 alembic>=1.18.5
 python-jose[cryptography]>=3.5.0
