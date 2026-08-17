@@ -18,7 +18,7 @@ pytest-cov>=7.1.0
 httpx>=0.28.1
 
 # Logging & Monitoring
-sentry-sdk[fastapi]>=2.66.1
+sentry-sdk[fastapi]>=2.68.0
 psutil>=7.2.2
 
 # Rate Limiting & Caching
