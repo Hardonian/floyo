@@ -1,5 +1,9 @@
 # Floyo
 
+<!-- BEGIN: REPO HERO -->
+![floyo — hero generated locally on the GPU stack](assets/repo-hero.png)
+<!-- END: REPO HERO -->
+
 **Discover hidden connections in your workflow. Automate what you didn't know could be automated.**
 
 [![Deployment Status](https://img.shields.io/badge/deployment-vercel-blue)](https://vercel.com)

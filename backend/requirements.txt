@@ -7,7 +7,7 @@ alembic>=1.19.1
 python-jose[cryptography]>=3.5.0
 passlib[bcrypt]>=1.7.4
 python-multipart>=0.0.32
-pydantic>=2.5.0
+pydantic>=2.13.5
 pydantic-settings>=2.15.0
 websockets>=16.0
 
@@ -18,7 +18,7 @@ pytest-cov>=7.1.0
 httpx>=0.28.1
 
 # Logging & Monitoring
-sentry-sdk[fastapi]>=2.68.0
+sentry-sdk[fastapi]>=2.68.1
 psutil>=7.2.2
 
 # Rate Limiting & Caching
@@ -34,7 +34,7 @@ flower>=2.1.0
 gzip-middleware>=0.1.1
 
 # Testing
-faker>=40.31.0
+faker>=40.38.0
 pytest-asyncio>=0.21.1
 
 # Workflow scheduling
@@ -43,7 +43,7 @@ croniter>=6.2.4
 # Security
 pyotp>=2.10.0
 qrcode[pil]>=8.2
-cryptography>=50.0.0
+cryptography>=50.0.1
 
 # Guardian Privacy System
 pyyaml>=6.0.3
@@ -56,7 +56,7 @@ scikit-learn>=1.9.0
 pandas>=2.0.0
 numpy>=2.2.6
 tensorflow>=2.13.0  # or tensorflow-cpu for CPU-only environments
-transformers>=5.15.1  # For transformer models
+transformers>=5.16.1  # For transformer models
 torch>=2.13.0  # Alternative to TensorFlow, required by transformers
 scipy>=1.11.0  # For statistical functions
 
@@ -64,7 +64,7 @@ scipy>=1.11.0  # For statistical functions
 requests>=2.34.2
 
 # Payment Processing (for webhook verification)
-stripe>=15.5.1  # Optional but recommended for Stripe webhooks
+stripe>=15.6.1  # Optional but recommended for Stripe webhooks
 
 # Async HTTP (optional, for async HTTP requests)
 aiohttp>=3.14.3
