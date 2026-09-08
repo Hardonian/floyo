@@ -152,7 +152,7 @@
     "next": "^16.3.1"
   },
   "devDependencies": {
-    "@axe-core/cli": "^4.8.0",
+    "@axe-core/cli": "^4.13.0",
     "@jest/globals": "^29.7.0",
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.62.1",
