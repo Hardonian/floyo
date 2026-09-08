@@ -56,8 +56,8 @@ scikit-learn>=1.9.0
 pandas>=2.0.0
 numpy>=2.2.6
 tensorflow>=2.13.0  # or tensorflow-cpu for CPU-only environments
-transformers>=5.16.1  # For transformer models
-torch>=2.13.0  # Alternative to TensorFlow, required by transformers
+transformers>=5.15.1  # For transformer models
+torch>=2.14.0  # Alternative to TensorFlow, required by transformers
 scipy>=1.11.0  # For statistical functions
 
 # HTTP Client (for SDK examples and external API calls)
