@@ -157,7 +157,7 @@
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.62.1",
     "@sentry/nextjs": "^10.74.0",
-    "@types/node": "^26.4.0",
+    "@types/node": "^26.5.1",
     "@types/pg": "^8.23.1",
     "@typescript-eslint/eslint-plugin": "^8.70.0",
     "@typescript-eslint/parser": "^8.70.0",
