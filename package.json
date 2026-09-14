@@ -155,7 +155,7 @@
     "@axe-core/cli": "^4.8.0",
     "@jest/globals": "^30.5.1",
     "@lhci/cli": "^0.15.1",
-    "@playwright/test": "^1.62.1",
+    "@playwright/test": "^1.63.0",
     "@sentry/nextjs": "^10.74.0",
     "@types/node": "^26.4.0",
     "@types/pg": "^8.23.1",
