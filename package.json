@@ -174,7 +174,7 @@
     "supabase": "^2.117.0",
     "ts-prune": "^0.10.3",
     "tsx": "^4.23.13",
-    "typescript": "^5.3.3",
+    "typescript": "^7.0.2",
     "vercel": "^59.23.1",
     "wait-on": "^7.2.0"
   }
