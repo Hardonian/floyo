@@ -169,6 +169,7 @@ jobs:
         env:
           API_BASE_URL: http://localhost:8000
           DATABASE_URL: postgresql://floyo:floyo@localhost:5432/floyo
+          SECRET_KEY: test-secret-key-for-ci
         run: |
           tsx tools/wiring/harness.ts || exit 1
 
