@@ -8,6 +8,12 @@ updates:
     commit-message:
       prefix: "deps"
     open-pull-requests-limit: 10
+    ignore:
+      # @typescript-eslint/eslint-plugin peer range is typescript ">=4.8.4 <6.1.0";
+      # typescript 6/7 majors make `npm ci` fail with ERESOLVE across every workflow.
+      # Revisit when typescript-eslint raises its peer range (github.com/typescript-eslint/typescript-eslint).
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
 
   # Python/pip dependencies
   - package-ecosystem: "pip"
