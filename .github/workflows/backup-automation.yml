@@ -62,8 +62,12 @@ jobs:
       - name: Cleanup Old Backups
         run: |
           # Keep only last 7 days of backups locally
-          find ops/snapshots -name "*.encrypted" -mtime +7 -delete
-          find ops/snapshots -name "*.metadata.json" -mtime +7 -delete
+          if [ -d ops/snapshots ]; then
+            find ops/snapshots -name "*.encrypted" -mtime +7 -delete
+            find ops/snapshots -name "*.metadata.json" -mtime +7 -delete
+          else
+            echo "::notice::ops/snapshots does not exist (backup skipped) - nothing to clean up"
+          fi
       
       - name: Notify on Failure
         if: failure() && env.HAS_BACKUP_WEBHOOK == 'true'
