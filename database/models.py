@@ -10,6 +10,7 @@ from sqlalchemy import (
     TIMESTAMP, ForeignKey, ARRAY, JSON, Index
 )
 from sqlalchemy.dialects.postgresql import UUID as PGUUID, JSONB, ARRAY as PGARRAY
+from sqlalchemy.types import TypeDecorator, CHAR
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -17,11 +18,31 @@ from sqlalchemy.sql import func
 Base = declarative_base()
 
 
+class GUID(TypeDecorator):
+    """UUID column that accepts str or uuid.UUID values on bind.
+
+    API layers pass ids as strings (JWT sub, URL params); the plain
+    PGUUID(as_uuid=True) bind processor calls ``value.hex`` and crashes on
+    str input outside native-UUID dialects (e.g. SQLite in tests).
+    """
+
+    impl = CHAR
+    cache_ok = True
+
+    def load_dialect_impl(self, dialect):
+        return dialect.type_descriptor(PGUUID(as_uuid=True))
+
+    def process_bind_param(self, value, dialect):
+        if isinstance(value, str):
+            return UUID(value)
+        return value
+
+
 class User(Base):
     """User model."""
     __tablename__ = "users"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id = Column(GUID(), primary_key=True, default=uuid4)
     email = Column(String(255), unique=True, nullable=False, index=True)
     username = Column(String(100), unique=True, nullable=True, index=True)
     hashed_password = Column(String(255), nullable=False)
@@ -54,8 +75,8 @@ class UserSession(Base):
     """User session/token model."""
     __tablename__ = "user_sessions"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     token_hash = Column(String(255), nullable=False, index=True)
     device_info = Column(Text, nullable=True)
     ip_address = Column(String(45), nullable=True)
@@ -70,8 +91,8 @@ class Event(Base):
     """Event model for tracking user actions."""
     __tablename__ = "events"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     event_type = Column(String(50), nullable=False, index=True)
     file_path = Column(Text, nullable=True)
     tool = Column(String(100), nullable=True)
@@ -91,8 +112,8 @@ class Pattern(Base):
     """Pattern model for file type usage patterns."""
     __tablename__ = "patterns"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     file_extension = Column(String(20), nullable=True)
     count = Column(Integer, default=0)
     last_used = Column(TIMESTAMP(timezone=True), nullable=True)
@@ -113,8 +134,8 @@ class FileRelationship(Base):
     """File relationship model."""
     __tablename__ = "relationships"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     source_file = Column(Text, nullable=False)
     target_file = Column(Text, nullable=False)
     relation_type = Column(String(50), nullable=False)
@@ -131,8 +152,8 @@ class TemporalPattern(Base):
     """Temporal pattern model."""
     __tablename__ = "temporal_patterns"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     sequence = Column(Text, nullable=False)
     count = Column(Integer, default=1)
     avg_time_gap = Column(Float, nullable=True)
@@ -148,8 +169,8 @@ class Suggestion(Base):
     """Integration suggestion model."""
     __tablename__ = "suggestions"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     trigger = Column(Text, nullable=False)
     tools_involved = Column(PGARRAY(String), nullable=True)
     suggested_integration = Column(Text, nullable=False)
@@ -174,8 +195,8 @@ class UserConfig(Base):
     """User configuration model."""
     __tablename__ = "user_configs"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
     monitored_directories = Column(PGARRAY(Text), nullable=True)
     exclude_patterns = Column(PGARRAY(Text), nullable=True)
     tracking_config = Column(JSONB, nullable=True)
@@ -191,7 +212,7 @@ class Organization(Base):
     """Organization/Workspace model for multi-tenant support."""
     __tablename__ = "organizations"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id = Column(GUID(), primary_key=True, default=uuid4)
     name = Column(String(255), nullable=False)
     slug = Column(String(100), unique=True, nullable=False, index=True)
     description = Column(Text, nullable=True)
@@ -211,9 +232,9 @@ class OrganizationMember(Base):
     """Organization membership with roles."""
     __tablename__ = "organization_members"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    organization_id = Column(PGUUID(as_uuid=True), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    organization_id = Column(GUID(), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     role = Column(String(50), nullable=False, default="member")  # owner, admin, member, viewer
     joined_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     updated_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -230,7 +251,7 @@ class Role(Base):
     """RBAC role definitions."""
     __tablename__ = "roles"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id = Column(GUID(), primary_key=True, default=uuid4)
     name = Column(String(100), unique=True, nullable=False)
     description = Column(Text, nullable=True)
     permissions = Column(JSONB, nullable=False)  # List of permission strings
@@ -243,12 +264,12 @@ class AuditLog(Base):
     """Audit trail for all operations."""
     __tablename__ = "audit_logs"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    organization_id = Column(PGUUID(as_uuid=True), ForeignKey("organizations.id", ondelete="SET NULL"), nullable=True, index=True)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    organization_id = Column(GUID(), ForeignKey("organizations.id", ondelete="SET NULL"), nullable=True, index=True)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
     action = Column(String(100), nullable=False, index=True)  # create, update, delete, login, etc.
     resource_type = Column(String(100), nullable=False)  # event, pattern, workflow, etc.
-    resource_id = Column(PGUUID(as_uuid=True), nullable=True)
+    resource_id = Column(GUID(), nullable=True)
     details = Column(JSONB, nullable=True)  # Additional context
     ip_address = Column(String(45), nullable=True)
     user_agent = Column(Text, nullable=True)
@@ -267,14 +288,14 @@ class WorkflowVersion(Base):
     """Workflow versioning for rollback capability."""
     __tablename__ = "workflow_versions"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    workflow_id = Column(PGUUID(as_uuid=True), ForeignKey("workflows.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    workflow_id = Column(GUID(), ForeignKey("workflows.id", ondelete="CASCADE"), nullable=False, index=True)
     version_number = Column(Integer, nullable=False)
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     steps = Column(JSONB, nullable=False)
     change_summary = Column(Text, nullable=True)
-    created_by = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    created_by = Column(GUID(), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now(), index=True)
 
     workflow = relationship("Workflow", back_populates="versions")
@@ -284,10 +305,10 @@ class WorkflowExecution(Base):
     """Workflow execution history."""
     __tablename__ = "workflow_executions"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    workflow_id = Column(PGUUID(as_uuid=True), ForeignKey("workflows.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    workflow_id = Column(GUID(), ForeignKey("workflows.id", ondelete="CASCADE"), nullable=False, index=True)
     status = Column(String(50), nullable=False, default="pending")  # pending, running, completed, failed
-    triggered_by = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    triggered_by = Column(GUID(), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     started_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     completed_at = Column(TIMESTAMP(timezone=True), nullable=True)
     error_message = Column(Text, nullable=True)
@@ -305,7 +326,7 @@ class IntegrationConnector(Base):
     """Pre-built integration connectors."""
     __tablename__ = "integration_connectors"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id = Column(GUID(), primary_key=True, default=uuid4)
     name = Column(String(255), nullable=False)
     service_type = Column(String(100), nullable=False, index=True)  # github, slack, googledrive, etc.
     description = Column(Text, nullable=True)
@@ -320,10 +341,10 @@ class UserIntegration(Base):
     """User-configured integrations."""
     __tablename__ = "user_integrations"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    organization_id = Column(PGUUID(as_uuid=True), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True, index=True)
-    connector_id = Column(PGUUID(as_uuid=True), ForeignKey("integration_connectors.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    organization_id = Column(GUID(), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True, index=True)
+    connector_id = Column(GUID(), ForeignKey("integration_connectors.id", ondelete="CASCADE"), nullable=False, index=True)
     name = Column(String(255), nullable=False)
     config = Column(JSONB, nullable=False)  # Encrypted connection credentials
     is_active = Column(Boolean, default=True)
@@ -345,9 +366,9 @@ class Workflow(Base):
     """Workflow model for user-defined workflows."""
     __tablename__ = "workflows"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    organization_id = Column(PGUUID(as_uuid=True), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    organization_id = Column(GUID(), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True, index=True)
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     steps = Column(JSONB, nullable=False)
@@ -368,8 +389,8 @@ class Referral(Base):
     """Referral code model for viral growth."""
     __tablename__ = "referrals"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    referrer_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    referrer_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     code = Column(String(50), unique=True, nullable=False, index=True)
     usage_count = Column(Integer, default=0)
     reward_count = Column(Integer, default=0)
@@ -389,10 +410,10 @@ class ReferralReward(Base):
     """Referral reward tracking."""
     __tablename__ = "referral_rewards"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    referral_id = Column(PGUUID(as_uuid=True), ForeignKey("referrals.id", ondelete="CASCADE"), nullable=False, index=True)
-    referrer_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
-    referred_user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    referral_id = Column(GUID(), ForeignKey("referrals.id", ondelete="CASCADE"), nullable=False, index=True)
+    referrer_id = Column(GUID(), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    referred_user_id = Column(GUID(), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
     reward_type = Column(String(50), nullable=False)  # signup, signup_bonus, activation, etc.
     reward_value = Column(Integer, default=1)
     status = Column(String(50), default="pending")  # pending, granted, expired
@@ -412,8 +433,8 @@ class RetentionCampaign(Base):
     """Retention campaign tracking."""
     __tablename__ = "retention_campaigns"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     campaign_type = Column(String(50), nullable=False)  # weekly_digest, activation, re_engagement, etc.
     content = Column(JSONB, nullable=False)
     status = Column(String(50), default="pending")  # pending, sent, opened, clicked
@@ -434,11 +455,11 @@ class WorkflowShare(Base):
     """Workflow sharing for marketplace/ecosystem."""
     __tablename__ = "workflow_shares"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    workflow_id = Column(PGUUID(as_uuid=True), ForeignKey("workflows.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    workflow_id = Column(GUID(), ForeignKey("workflows.id", ondelete="CASCADE"), nullable=False, index=True)
     share_code = Column(String(100), unique=True, nullable=False, index=True)
     share_type = Column(String(50), default="public")  # public, unlisted, private
-    created_by_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    created_by_id = Column(GUID(), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     view_count = Column(Integer, default=0)
     fork_count = Column(Integer, default=0)
     is_featured = Column(Boolean, default=False)
@@ -457,7 +478,7 @@ class SubscriptionPlan(Base):
     """Subscription plan definitions."""
     __tablename__ = "subscription_plans"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id = Column(GUID(), primary_key=True, default=uuid4)
     name = Column(String(255), nullable=False)
     tier = Column(String(50), nullable=False, index=True)  # free, pro, enterprise
     description = Column(Text, nullable=True)
@@ -475,10 +496,10 @@ class Subscription(Base):
     """User/organization subscription."""
     __tablename__ = "subscriptions"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
-    organization_id = Column(PGUUID(as_uuid=True), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True, index=True)
-    plan_id = Column(PGUUID(as_uuid=True), ForeignKey("subscription_plans.id", ondelete="RESTRICT"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
+    organization_id = Column(GUID(), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True, index=True)
+    plan_id = Column(GUID(), ForeignKey("subscription_plans.id", ondelete="RESTRICT"), nullable=False, index=True)
     billing_cycle = Column(String(20), nullable=False)  # monthly, yearly
     status = Column(String(50), nullable=False, default="active")  # active, canceled, past_due, expired
     price = Column(Float, nullable=False)
@@ -502,10 +523,10 @@ class UsageMetric(Base):
     """Usage metrics for billing and limits."""
     __tablename__ = "usage_metrics"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    subscription_id = Column(PGUUID(as_uuid=True), ForeignKey("subscriptions.id", ondelete="CASCADE"), nullable=True, index=True)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
-    organization_id = Column(PGUUID(as_uuid=True), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    subscription_id = Column(GUID(), ForeignKey("subscriptions.id", ondelete="CASCADE"), nullable=True, index=True)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
+    organization_id = Column(GUID(), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=True, index=True)
     metric_type = Column(String(50), nullable=False)  # events, workflows, api_calls, storage, etc.
     amount = Column(Integer, default=0)
     period_start = Column(TIMESTAMP(timezone=True), nullable=False, index=True)
@@ -525,8 +546,8 @@ class BillingEvent(Base):
     """Billing events (invoices, payments, refunds)."""
     __tablename__ = "billing_events"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    subscription_id = Column(PGUUID(as_uuid=True), ForeignKey("subscriptions.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    subscription_id = Column(GUID(), ForeignKey("subscriptions.id", ondelete="CASCADE"), nullable=False, index=True)
     event_type = Column(String(50), nullable=False)  # invoice, payment, refund, charge_failed, etc.
     amount = Column(Float, nullable=False)
     currency = Column(String(10), default="USD")
@@ -547,7 +568,7 @@ class SSOProvider(Base):
     """SSO provider configuration (SAML, OIDC)."""
     __tablename__ = "sso_providers"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id = Column(GUID(), primary_key=True, default=uuid4)
     name = Column(String(255), nullable=False)
     provider_type = Column(String(50), nullable=False)  # saml, oidc
     config = Column(JSONB, nullable=False)  # Provider-specific configuration
@@ -562,9 +583,9 @@ class SSOConnection(Base):
     """SSO connection for organizations."""
     __tablename__ = "sso_connections"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    organization_id = Column(PGUUID(as_uuid=True), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
-    provider_id = Column(PGUUID(as_uuid=True), ForeignKey("sso_providers.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    organization_id = Column(GUID(), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    provider_id = Column(GUID(), ForeignKey("sso_providers.id", ondelete="CASCADE"), nullable=False, index=True)
     config = Column(JSONB, nullable=False)  # Connection-specific config
     is_active = Column(Boolean, default=True)
     last_sync_at = Column(TIMESTAMP(timezone=True), nullable=True)
@@ -583,8 +604,8 @@ class ComplianceReport(Base):
     """Compliance reports (GDPR, SOC2, etc.)."""
     __tablename__ = "compliance_reports"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    organization_id = Column(PGUUID(as_uuid=True), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    organization_id = Column(GUID(), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, index=True)
     report_type = Column(String(50), nullable=False)  # gdpr, soc2, hipaa, etc.
     report_data = Column(JSONB, nullable=False)
     status = Column(String(50), default="pending")  # pending, completed, failed
@@ -602,8 +623,8 @@ class EnterpriseSettings(Base):
     """Enterprise organization settings."""
     __tablename__ = "enterprise_settings"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    organization_id = Column(PGUUID(as_uuid=True), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    organization_id = Column(GUID(), ForeignKey("organizations.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
     settings = Column(JSONB, nullable=False)  # Enterprise-specific settings
     compliance_config = Column(JSONB, nullable=True)  # Compliance requirements
     security_config = Column(JSONB, nullable=True)  # Security settings
@@ -621,8 +642,8 @@ class TwoFactorAuth(Base):
     """Two-factor authentication for users."""
     __tablename__ = "two_factor_auth"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
     secret = Column(String(255), nullable=True)  # TOTP secret (encrypted)
     is_enabled = Column(Boolean, default=False)
     backup_codes = Column(PGARRAY(String), nullable=True)  # Backup codes
@@ -641,8 +662,8 @@ class SecurityAudit(Base):
     """Security audit log for security events."""
     __tablename__ = "security_audits"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="SET NULL"), nullable=True, index=True)
     event_type = Column(String(100), nullable=False, index=True)  # failed_login, password_change, 2fa_enabled, etc.
     severity = Column(String(50), nullable=False, index=True)  # low, medium, high, critical
     details = Column(JSONB, nullable=True)
@@ -662,9 +683,9 @@ class GuardianEvent(Base):
     """Guardian privacy monitoring events."""
     __tablename__ = "guardian_events"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id = Column(GUID(), primary_key=True, default=uuid4)
     event_id = Column(String(255), unique=True, nullable=False, index=True)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
 
     # Event details
     event_type = Column(String(100), nullable=False, index=True)
@@ -711,8 +732,8 @@ class TrustLedgerRoot(Base):
     """Daily hash roots for trust ledger verification."""
     __tablename__ = "trust_ledger_roots"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     date = Column(TIMESTAMP(timezone=True), nullable=False, index=True)  # Date (time set to 00:00:00)
     hash_root = Column(String(255), nullable=False, index=True)  # SHA256 hash of day's entries
     entry_count = Column(Integer, nullable=False, default=0)
@@ -729,8 +750,8 @@ class TrustFabricModel(Base):
     """User's Trust Fabric AI model for adaptive learning."""
     __tablename__ = "trust_fabric_models"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
     
     # Learning parameters
     privacy_mode_toggles = Column(Integer, default=0)  # How often user toggles privacy modes
@@ -758,8 +779,8 @@ class GuardianSettings(Base):
     """User's Guardian privacy settings."""
     __tablename__ = "guardian_settings"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
     
     # Mode toggles
     private_mode_enabled = Column(Boolean, default=False)
@@ -793,7 +814,7 @@ class MLModel(Base):
     """ML model metadata for tracking trained models."""
     __tablename__ = "ml_models"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
+    id = Column(GUID(), primary_key=True, default=uuid4)
     model_type = Column(String(50), nullable=False, index=True)
     version = Column(Integer, nullable=False, default=1)
     training_data_hash = Column(String(64), nullable=True)
@@ -813,9 +834,9 @@ class Prediction(Base):
     """Track ML predictions for evaluation."""
     __tablename__ = "predictions"
     
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    model_id = Column(PGUUID(as_uuid=True), ForeignKey("ml_models.id", ondelete="CASCADE"), nullable=False, index=True)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    model_id = Column(GUID(), ForeignKey("ml_models.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
     prediction_type = Column(String(50), nullable=False)
     input_features = Column(JSONB, nullable=True)
     prediction_result = Column(JSONB, nullable=False)
@@ -833,8 +854,8 @@ class Notification(Base):
     """Notification model for in-app and email notifications."""
     __tablename__ = "notifications"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     notification_type = Column(String(50), nullable=False)  # info, success, warning, error
     title = Column(String(255), nullable=False)
     message = Column(Text, nullable=False)
@@ -856,8 +877,8 @@ class UTMTrack(Base):
     """UTM tracking for attribution and growth metrics."""
     __tablename__ = "utm_tracks"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=True, index=True)
     source = Column(String(100), nullable=True, index=True)  # google, facebook, twitter, newsletter, etc.
     medium = Column(String(100), nullable=True, index=True)  # cpc, organic, email, referral, etc.
     campaign = Column(String(255), nullable=True, index=True)
@@ -880,8 +901,8 @@ class PrivacyPrefs(Base):
     """User privacy preferences."""
     __tablename__ = "privacy_prefs"
 
-    id = Column(PGUUID(as_uuid=True), primary_key=True, default=uuid4)
-    user_id = Column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    user_id = Column(GUID(), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
     monitoring_enabled = Column(Boolean, default=False)
     data_retention_days = Column(Integer, default=14)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())

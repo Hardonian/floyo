@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from backend.api import (
     auth, events, patterns, suggestions, stats,
     telemetry, organizations, workflows, billing, admin, enterprise, growth, operational, security,
-    privacy, autonomous, v1
+    privacy, autonomous, v1, health
 )
 from backend.api.analytics import dashboard as analytics_dashboard
 from backend.api.marketplace import __init__ as marketplace_module
@@ -27,6 +27,7 @@ def register_routes(app: FastAPI):
     app.include_router(suggestions.router)
     app.include_router(stats.router)
     app.include_router(telemetry.router)
+    app.include_router(health.router)
     app.include_router(insights_router)
     app.include_router(organizations.router)
     app.include_router(workflows.router)

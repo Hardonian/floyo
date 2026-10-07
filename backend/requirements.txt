@@ -15,7 +15,12 @@ websockets>=16.0
 pytest>=9.1.1
 pytest-asyncio>=0.21.1
 pytest-cov>=7.1.0
+pytest-mock>=3.14.0
 httpx>=0.28.1
+
+# passlib 1.7.4 is incompatible with bcrypt>=4.1 (removed __about__ attr);
+# pin bcrypt below 4.1 or password hashing raises MissingBackendError.
+bcrypt>=3.1.0,<4.1
 
 # Logging & Monitoring
 sentry-sdk[fastapi]>=2.69.2
@@ -30,9 +35,6 @@ hiredis>=3.4.1
 celery>=5.6.3
 flower>=2.1.0
 
-# Compression
-gzip-middleware>=0.1.1
-
 # Testing
 faker>=40.39.0
 pytest-asyncio>=0.21.1
@@ -44,6 +46,12 @@ croniter>=6.2.4
 pyotp>=2.10.0
 qrcode[pil]>=8.2
 cryptography>=50.0.1
+
+# Auth (imported as `jwt` in backend/auth)
+pyjwt>=2.15.1
+
+# Email validation (pydantic EmailStr)
+email-validator>=2.3.0
 
 # Guardian Privacy System
 pyyaml>=6.0.3

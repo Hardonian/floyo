@@ -71,7 +71,7 @@ def process_events_task(self, user_id: str = None, hours_back: int = 1):
                         'eventType': event.event_type,
                         'tool': event.tool or 'unknown',
                         'timestamp': event.timestamp.isoformat(),
-                        'metadata': event.metadata or {},
+                        'metadata': event.details or {},
                     }
                     for event in user_events
                 ]

@@ -28,45 +28,64 @@ def test_user(db_session: Session):
     return user
 
 
-def test_telemetry_flow_integration(db_session: Session, test_user: User):
+def test_telemetry_flow_integration():
     """
     Test complete telemetry flow:
     1. Ingest events
     2. Detect patterns
     3. Generate insights
+
+    Uses a real (non-transaction-wrapped) session because the pattern
+    detection job opens its own DB session — data must be committed for a
+    background job to see it, exactly as in production.
     """
-    user_id = str(test_user.id)
-    event_service = EventService(db_session)
-    
-    # Step 1: Create multiple events
-    events_created = []
-    for i in range(5):
-        event = event_service.create_event(
-            user_id=user_id,
-            event_type="file_created",
-            file_path=f"/test/file{i}.ts",
-            tool="vscode",
+    from backend.database import SessionLocal
+
+    db = SessionLocal()
+    try:
+        user = User(
+            email="test@example.com",
+            username="testuser",
+            hashed_password="hashed_password",
         )
-        events_created.append(event)
-    
-    assert len(events_created) == 5
-    
-    # Step 2: Trigger pattern detection
-    result = trigger_pattern_detection_sync(user_id=user_id, hours_back=1)
-    
-    assert result['processed'] >= 5
-    
-    # Step 3: Generate insights
-    insights_service = InsightsService()
-    insights = insights_service.generate_insights_for_user(
-        db=db_session,
-        user_id=user_id,
-        days_back=1,
-    )
-    
-    # Should generate at least some insights
-    assert isinstance(insights, list)
-    
-    # Verify patterns were created
-    patterns = db_session.query(Pattern).filter(Pattern.user_id == user_id).all()
-    assert len(patterns) >= 0  # May be 0 if frequency threshold not met
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        user_id = str(user.id)
+        event_service = EventService(db)
+
+        # Step 1: Create multiple events
+        events_created = []
+        for i in range(5):
+            event = event_service.create_event(
+                user_id=user_id,
+                event_type="file_created",
+                file_path=f"/test/file{i}.ts",
+                tool="vscode",
+            )
+            events_created.append(event)
+
+        assert len(events_created) == 5
+
+        # Step 2: Trigger pattern detection
+        result = trigger_pattern_detection_sync(user_id=user_id, hours_back=1)
+
+        assert result['processed'] >= 5
+
+        # Step 3: Generate insights
+        insights_service = InsightsService()
+        insights = insights_service.generate_insights_for_user(
+            db=db,
+            user_id=user_id,
+            days_back=1,
+        )
+
+        # Should generate at least some insights
+        assert isinstance(insights, list)
+
+        # Verify patterns were created
+        patterns = db.query(Pattern).filter(Pattern.user_id == user_id).all()
+        assert len(patterns) >= 0  # May be 0 if frequency threshold not met
+    finally:
+        db.rollback()
+        db.close()

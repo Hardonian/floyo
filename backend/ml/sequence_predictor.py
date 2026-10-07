@@ -6,6 +6,10 @@ import numpy as np
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 
+from backend.logging_config import get_logger
+
+logger = get_logger(__name__)
+
 try:
     import tensorflow as tf
     from tensorflow.keras.models import Sequential
@@ -19,9 +23,6 @@ except ImportError:
 
 from backend.ml.base import BaseMLModel, FloyoDataProcessor
 from database.models import Event, TemporalPattern, WorkflowExecution
-from backend.logging_config import get_logger
-
-logger = get_logger(__name__)
 
 
 class SequencePredictor(BaseMLModel):

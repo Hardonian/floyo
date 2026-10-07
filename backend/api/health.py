@@ -63,6 +63,17 @@ async def health_check():
     }
 
 
+@router.get("/api/healthz")
+async def healthz_alias():
+    """Compatibility alias of /health for k8s-style probes and the wiring harness."""
+    return {
+        "status": "healthy",
+        "timestamp": datetime.utcnow().isoformat(),
+        "version": "1.0.0",
+        "environment": settings.environment
+    }
+
+
 @router.get("/health/readiness")
 async def readiness_check(db: Session = Depends(get_db)):
     """
