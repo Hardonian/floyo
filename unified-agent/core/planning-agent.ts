@@ -3,7 +3,7 @@
  * Extracts TODOs/FIXMEs and generates sprint plans
  */
 
-import { writeFileSync, existsSync, readFileSync } from 'fs';
+import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
 import { readdirSync, statSync } from 'fs';
 import { join } from 'path';
 import type { RepoContext } from './repo-context.js';
@@ -243,7 +243,7 @@ export class PlanningAgent {
   saveSprintPlan(plan: SprintPlan): void {
     const roadmapDir = join(this.workspacePath, 'roadmap');
     if (!existsSync(roadmapDir)) {
-      require('fs').mkdirSync(roadmapDir, { recursive: true });
+      mkdirSync(roadmapDir, { recursive: true });
     }
 
     // Save JSON

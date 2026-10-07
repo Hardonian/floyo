@@ -3,7 +3,7 @@
  * Self-evaluates and proposes optimizations
  */
 
-import { writeFileSync, existsSync, readFileSync } from 'fs';
+import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import type { RepoContext } from './repo-context.js';
 
@@ -224,7 +224,7 @@ export class ReflectionAgent {
   saveReflection(report: ReflectionReport): void {
     const autoDir = join(this.workspacePath, 'auto');
     if (!existsSync(autoDir)) {
-      require('fs').mkdirSync(autoDir, { recursive: true });
+      mkdirSync(autoDir, { recursive: true });
     }
 
     // Save JSON

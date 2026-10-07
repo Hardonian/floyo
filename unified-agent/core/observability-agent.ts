@@ -3,7 +3,7 @@
  * Maintains metrics endpoint and dashboard
  */
 
-import { writeFileSync, existsSync } from 'fs';
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 
 export interface TelemetryData {
@@ -131,7 +131,7 @@ export class ObservabilityAgent {
   saveSnapshot(snapshot: MetricsSnapshot): void {
     const adminDir = join(this.workspacePath, 'admin');
     if (!existsSync(adminDir)) {
-      require('fs').mkdirSync(adminDir, { recursive: true });
+      mkdirSync(adminDir, { recursive: true });
     }
 
     writeFileSync(

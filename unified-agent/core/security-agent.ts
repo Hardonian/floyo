@@ -3,7 +3,7 @@
  * Builds SBOM, scans for vulnerabilities, verifies security policies
  */
 
-import { writeFileSync, existsSync, readFileSync } from 'fs';
+import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
 import type { RepoContext } from './repo-context.js';
@@ -217,7 +217,7 @@ export class SecurityAgent {
   saveSBOM(metrics: SecurityMetrics): void {
     const securityDir = join(this.workspacePath, 'security');
     if (!existsSync(securityDir)) {
-      require('fs').mkdirSync(securityDir, { recursive: true });
+      mkdirSync(securityDir, { recursive: true });
     }
 
     writeFileSync(
@@ -233,7 +233,7 @@ export class SecurityAgent {
   saveCompliance(metrics: SecurityMetrics): void {
     const adminDir = join(this.workspacePath, 'admin');
     if (!existsSync(adminDir)) {
-      require('fs').mkdirSync(adminDir, { recursive: true });
+      mkdirSync(adminDir, { recursive: true });
     }
 
     writeFileSync(

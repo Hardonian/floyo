@@ -3,7 +3,7 @@
  * Tracks cloud costs and suggests optimizations
  */
 
-import { writeFileSync, existsSync, readFileSync } from 'fs';
+import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import type { RepoContext } from './repo-context.js';
 
@@ -95,7 +95,7 @@ export class CostAgent {
     const costPath = join(this.workspacePath, 'admin', 'cost.json');
     const adminDir = join(this.workspacePath, 'admin');
     if (!existsSync(adminDir)) {
-      require('fs').mkdirSync(adminDir, { recursive: true });
+      mkdirSync(adminDir, { recursive: true });
     }
 
     writeFileSync(costPath, JSON.stringify(metrics, null, 2), 'utf-8');

@@ -3,7 +3,7 @@
  * Auto-updates README, CHANGELOG, and architecture docs
  */
 
-import { writeFileSync, existsSync, readFileSync } from 'fs';
+import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
 import type { RepoContext } from './repo-context.js';
@@ -68,7 +68,7 @@ export class DocumentationAgent {
       // Ensure docs directory exists
       const docsDir = join(this.workspacePath, 'docs');
       if (!existsSync(docsDir)) {
-        require('fs').mkdirSync(docsDir, { recursive: true });
+        mkdirSync(docsDir, { recursive: true });
       }
 
       // Check if intent log exists
@@ -158,7 +158,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       const archContent = this.generateArchitectureDoc(context);
       const docsDir = join(this.workspacePath, 'docs');
       if (!existsSync(docsDir)) {
-        require('fs').mkdirSync(docsDir, { recursive: true });
+        mkdirSync(docsDir, { recursive: true });
       }
       writeFileSync(archPath, archContent, 'utf-8');
       update.filesUpdated.push('docs/architecture.md');
