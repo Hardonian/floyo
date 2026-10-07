@@ -68,7 +68,7 @@ jobs:
         env:
           DATABASE_URL: postgresql://floyo:floyo@localhost:5432/floyo
         run: |
-          cd backend
+          # Run from repo root so `database`/`backend` packages are importable
           python -c "from database.models import Base; from backend.database import engine; Base.metadata.create_all(engine)"
 
       - name: Start backend server
@@ -77,8 +77,7 @@ jobs:
           SECRET_KEY: test-secret-key-for-ci
           REDIS_URL: redis://localhost:6379
         run: |
-          cd backend
-          uvicorn main:app --host 0.0.0.0 --port 8000 &
+          python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 &
           sleep 5
         continue-on-error: true
 
