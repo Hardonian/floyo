@@ -59,13 +59,11 @@ pyyaml>=6.0.3
 # Email (optional - for password reset and notifications)
 sendgrid>=6.12.5  # Optional: for SendGrid email service
 
-# Machine Learning & Data Science
+# Machine Learning & Data Science (heavy optional stack lives in
+# requirements-ml.txt: tensorflow, torch, transformers - see that file)
 scikit-learn>=1.9.0
 pandas>=2.0.0
 numpy>=2.2.6
-tensorflow>=2.13.0  # or tensorflow-cpu for CPU-only environments
-transformers>=5.17.0  # For transformer models
-torch>=2.14.0  # Alternative to TensorFlow, required by transformers
 scipy>=1.11.0  # For statistical functions
 
 # HTTP Client (for SDK examples and external API calls)

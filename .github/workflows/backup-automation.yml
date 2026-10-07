@@ -30,6 +30,12 @@ jobs:
       
       - name: Create Backup
         run: |
+          DB_HOST=$(node -e "console.log(new URL(process.env.DATABASE_URL).hostname)")
+          if ! getent hosts "$DB_HOST" >/dev/null 2>&1; then
+            echo "::notice::DATABASE_URL host '$DB_HOST' does not resolve (stale or paused database) - backup skipped; rotate the DATABASE_URL secret to re-enable"
+            echo "Backup skipped: database host $DB_HOST unreachable" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           if [ "$HAS_SNAPSHOT_KEY" = "true" ]; then
             npm run ops:snapshot -- --encrypt
           else

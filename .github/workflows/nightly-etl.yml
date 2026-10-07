@@ -36,4 +36,15 @@ jobs:
           SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_PASSWORD }}
           SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
           TZ: America/Toronto
-        run: npx tsx scripts/etl/compute_metrics.ts --cron
+        run: |
+          if [ -n "$DATABASE_URL" ]; then
+            DB_HOST=$(node -e "console.log(new URL(process.env.DATABASE_URL).hostname)")
+            if ! getent hosts "$DB_HOST" >/dev/null 2>&1; then
+              echo "::notice::DATABASE_URL host '$DB_HOST' does not resolve (stale or paused database) - ETL skipped; rotate the DATABASE_URL secret to re-enable"
+              exit 0
+            fi
+          else
+            echo "::notice::DATABASE_URL not set - ETL skipped (set it to enable)"
+            exit 0
+          fi
+          npx tsx scripts/etl/compute_metrics.ts --cron
