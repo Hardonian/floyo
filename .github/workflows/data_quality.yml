@@ -4,21 +4,30 @@ on:
 jobs:
   run:
     runs-on: ubuntu-latest
+    env:
+      HAS_SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: npm ci || true
+      - name: SUPABASE_DB_URL check
+        if: env.HAS_SUPABASE_DB_URL != 'true'
+        run: echo "::notice::SUPABASE_DB_URL secret not configured - skipping data quality run (set it to enable)"
       - name: Compute metrics (yesterday)
-        env: { SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }} }
-        run: node scripts/etl/compute_metrics.ts --start $(date -u -d 'yesterday' +%F) --end $(date -u +%F)
+        if: env.HAS_SUPABASE_DB_URL == 'true'
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: npx tsx scripts/etl/compute_metrics.ts --start $(date -u -d 'yesterday' +%F) --end $(date -u +%F)
       - name: Data Quality
-        env: { SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }} }
-        run: node scripts/agents/run_data_quality.ts
+        if: env.HAS_SUPABASE_DB_URL == 'true'
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: npx tsx scripts/agents/run_data_quality.ts
       - name: Write status.json
         if: always()
         env:
           TZ: America/Toronto
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN || github.token }}
-        run: node scripts/agents/write_status_json.ts || true
+        run: npx tsx scripts/agents/write_status_json.ts || true

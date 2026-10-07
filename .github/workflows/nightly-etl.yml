@@ -2,6 +2,7 @@ name: Nightly ETL
 on:
   schedule:
     - cron: '10 1 * * *'  # 01:10 America/Toronto
+  workflow_dispatch:
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -10,15 +11,29 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - name: Install deps
-        run: npm ci || true
+        run: npm ci
+      - name: Check optional ad-platform tokens
+        env:
+          META_TOKEN: ${{ secrets.META_TOKEN }}
+          TIKTOK_TOKEN: ${{ secrets.TIKTOK_TOKEN }}
+          SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
+          SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_PASSWORD }}
+          SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
+        run: |
+          for v in META_TOKEN TIKTOK_TOKEN SHOPIFY_API_KEY SHOPIFY_PASSWORD SHOPIFY_STORE; do
+            if [ -z "${!v}" ]; then
+              echo "::notice::$v not configured - ad-platform pull steps are disabled"
+            fi
+          done
       - name: Run ETL
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           META_TOKEN: ${{ secrets.META_TOKEN }}
           TIKTOK_TOKEN: ${{ secrets.TIKTOK_TOKEN }}
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
           SHOPIFY_PASSWORD: ${{ secrets.SHOPIFY_PASSWORD }}
           SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
           TZ: America/Toronto
-        run: node scripts/etl/compute_metrics.ts --cron
+        run: npx tsx scripts/etl/compute_metrics.ts --cron

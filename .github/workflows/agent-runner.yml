@@ -79,6 +79,11 @@ jobs:
         run: |
           # Use notify utility to send alerts
           # npm run ops notify --type=reliability --message="Regression detected"
+          for v in RELIABILITY_ALERT_WEBHOOK SECURITY_ALERT_WEBHOOK COST_ALERT_WEBHOOK; do
+            if [ -z "${!v}" ]; then
+              echo "::notice::$v not configured - alert delivery is disabled"
+            fi
+          done
           echo "Alerts would be sent via webhooks"
 
       - name: Create regression issue if persistent

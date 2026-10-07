@@ -3,20 +3,26 @@ on: [workflow_dispatch, pull_request]
 jobs:
   run:
     runs-on: ubuntu-latest
+    env:
+      HAS_SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: npm ci || true
+      - name: SUPABASE_DB_URL check
+        if: env.HAS_SUPABASE_DB_URL != 'true'
+        run: echo "::notice::SUPABASE_DB_URL secret not configured - skipping preflight (set it to enable)"
       - name: Preflight
+        if: env.HAS_SUPABASE_DB_URL == 'true'
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           TZ: America/Toronto
-        run: node scripts/agents/preflight.ts
+        run: npx tsx scripts/agents/preflight.ts
       - name: Write status.json
         if: always()
         env:
           TZ: America/Toronto
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN || github.token }}
-        run: node scripts/agents/write_status_json.ts || true
+        run: npx tsx scripts/agents/write_status_json.ts || true

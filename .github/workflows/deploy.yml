@@ -28,6 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: production
+    env:
+      HAS_CF: ${{ secrets.CF_API_TOKEN != '' && secrets.CF_ACCOUNT_ID != '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -39,12 +41,18 @@ jobs:
       - name: Install wrangler
         run: npm install -g wrangler
 
+      - name: Cloudflare credentials check
+        if: env.HAS_CF != 'true'
+        run: echo "::notice::CF_API_TOKEN/CF_ACCOUNT_ID not configured - skipping Cloudflare Workers deploy (set them to enable)"
+
       - name: Create D1 database (idempotent)
+        if: env.HAS_CF == 'true'
         continue-on-error: true
         working-directory: deploy/workers
         run: wrangler d1 create drift_db || true
 
       - name: Apply D1 schema
+        if: env.HAS_CF == 'true'
         continue-on-error: true
         working-directory: deploy/workers
         run: |
@@ -56,6 +64,7 @@ jobs:
           fi
 
       - name: Deploy to Cloudflare Workers
+        if: env.HAS_CF == 'true'
         working-directory: deploy/workers
         run: wrangler deploy --minify
         env:

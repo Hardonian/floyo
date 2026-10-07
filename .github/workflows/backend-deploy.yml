@@ -32,8 +32,7 @@ jobs:
 
       - name: Run tests
         run: |
-          cd backend
-          pytest tests/unit/ -v --tb=short
+          python -m pytest tests/backend/ -v --tb=short -o addopts=""
         continue-on-error: false
 
   deploy:
@@ -55,33 +54,27 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: Validate required secrets
+        id: secrets
         run: |
           set -euo pipefail
           echo "🔍 Validating required secrets..."
-          
+
           MISSING_SECRETS=()
-          
+
           if [ -z "${{ secrets.FLY_API_TOKEN }}" ] || [ "${{ secrets.FLY_API_TOKEN }}" == "" ]; then
             MISSING_SECRETS+=("FLY_API_TOKEN")
           fi
-          
+
           if [ ${#MISSING_SECRETS[@]} -gt 0 ]; then
-            echo "❌ Missing required secrets: ${MISSING_SECRETS[*]}"
-            echo ""
-            echo "Please set the following secrets in GitHub:"
-            echo "  - Settings → Secrets and variables → Actions"
-            echo ""
-            for secret in "${MISSING_SECRETS[@]}"; do
-              echo "  - $secret"
-            done
-            echo ""
-            echo "See docs/backend-deployment.md for setup instructions."
-            exit 1
+            echo "::notice::Missing secrets: ${MISSING_SECRETS[*]} - Fly.io deployment skipped (set them in Settings → Secrets and variables → Actions to enable; see docs/backend-deployment.md)"
+            echo "has_fly=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "✅ All required secrets are present"
+            echo "has_fly=true" >> "$GITHUB_OUTPUT"
           fi
-          
-          echo "✅ All required secrets are present"
 
       - name: Deploy to Fly.io
+        if: steps.secrets.outputs.has_fly == 'true'
         run: |
           set -euo pipefail
           cd backend
@@ -113,6 +106,7 @@ jobs:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
       - name: Health Check
+        if: steps.secrets.outputs.has_fly == 'true'
         run: |
           set -euo pipefail
           echo "🏥 Checking backend health..."

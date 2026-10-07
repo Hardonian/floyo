@@ -32,6 +32,7 @@ jobs:
     env:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
       EAS_NO_VCS: 1
+      HAS_EXPO_TOKEN: ${{ secrets.EXPO_TOKEN != '' }}
     
     steps:
       - name: Checkout
@@ -46,25 +47,31 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
+      - name: EXPO_TOKEN check
+        if: env.HAS_EXPO_TOKEN != 'true'
+        run: echo "::notice::EXPO_TOKEN not configured - skipping mobile build/submit (set it to enable)"
+      
       - name: Setup Expo CLI
+        if: env.HAS_EXPO_TOKEN == 'true'
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
       
       - name: EAS Build
+        if: env.HAS_EXPO_TOKEN == 'true'
         run: |
-          PLATFORM=${PLATFORM:-${{ github.event.inputs.platform || 'all' }}
-          PROFILE=${PROFILE:-${{ github.event.inputs.profile || 'production' }}
+          PLATFORM=${PLATFORM:-${{ github.event.inputs.platform || 'all' }}}
+          PROFILE=${PROFILE:-${{ github.event.inputs.profile || 'production' }}}
           eas build --platform $PLATFORM --profile $PROFILE --non-interactive
         env:
           PLATFORM: ${{ github.event.inputs.platform }}
           PROFILE: ${{ github.event.inputs.profile }}
       
       - name: EAS Submit (iOS)
-        if: github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' || startsWith(github.ref, 'refs/tags/v')
+        if: env.HAS_EXPO_TOKEN == 'true' && (github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'all' || startsWith(github.ref, 'refs/tags/v'))
         run: eas submit -p ios --latest --non-interactive
       
       - name: EAS Submit (Android)
-        if: github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all' || startsWith(github.ref, 'refs/tags/v')
+        if: env.HAS_EXPO_TOKEN == 'true' && (github.event.inputs.platform == 'android' || github.event.inputs.platform == 'all' || startsWith(github.ref, 'refs/tags/v'))
         run: eas submit -p android --latest --non-interactive

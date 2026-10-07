@@ -131,6 +131,7 @@ jobs:
             echo "{\"bundleMB\": $BUNDLE_MB, \"buildDurationMin\": $AVG_DURATION, \"successRate\": $SUCCESS_RATE}" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
           else
+            echo "::notice::EXPO_TOKEN not configured - skipping Expo build metrics"
             echo "expo_metrics={}" >> $GITHUB_OUTPUT
           fi
         continue-on-error: true

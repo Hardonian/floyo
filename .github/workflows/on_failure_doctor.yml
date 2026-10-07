@@ -11,18 +11,25 @@ jobs:
   heal:
     if: ${{ github.event.workflow_run.conclusion != 'success' }}
     runs-on: ubuntu-latest
+    env:
+      HAS_SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
       - run: npm ci || true
+      - name: SUPABASE_DB_URL check
+        if: env.HAS_SUPABASE_DB_URL != 'true'
+        run: echo "::notice::SUPABASE_DB_URL secret not configured - skipping auto-heal doctor (set it to enable)"
       - name: Doctor
-        env: { SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }} }
-        run: node scripts/agents/system_doctor.ts
+        if: env.HAS_SUPABASE_DB_URL == 'true'
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: npx tsx scripts/agents/system_doctor.ts
       - name: Write status.json
         if: always()
         env:
           TZ: America/Toronto
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN || github.token }}
-        run: node scripts/agents/write_status_json.ts || true
+        run: npx tsx scripts/agents/write_status_json.ts || true

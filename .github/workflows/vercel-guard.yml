@@ -37,6 +37,9 @@ jobs:
           VALIDATE_BASE_URL: ${{ secrets.VALIDATE_BASE_URL || 'http://localhost:3000' }}
           VERCEL_ENV: ${{ github.event_name == 'pull_request' && 'preview' || 'production' }}
         run: |
+          if [ -z "${{ secrets.VALIDATE_BASE_URL }}" ]; then
+            echo "::notice::VALIDATE_BASE_URL not configured - validating against a local dev server instead of a deployment"
+          fi
           # Start dev server in background if VALIDATE_BASE_URL is localhost
           if [[ "$VALIDATE_BASE_URL" == "http://localhost"* ]]; then
             cd frontend && npm run dev &
