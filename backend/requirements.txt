@@ -81,3 +81,7 @@ pytz>=2026.3.post1
 
 # Additional SQLAlchemy utilities
 sqlalchemy-utils>=0.42.1
+
+# PostgreSQL driver for SQLAlchemy 2.x (its default postgresql:// dialect is
+# the psycopg (v3) driver; psycopg2-binary alone makes create_engine fail)
+psycopg[binary]>=3.2.0

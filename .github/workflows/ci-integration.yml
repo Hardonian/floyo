@@ -61,7 +61,7 @@ jobs:
           npm ci
 
       - name: Setup Prisma
-        run: npx prisma generate
+        run: npx prisma@6 generate
 
       - name: Initialize database
         env:
