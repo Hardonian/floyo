@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-10-07T16:26:58.785Z",
+  "monthlySpend": {
+    "total": 45,
+    "vercel": 20,
+    "supabase": 25
+  },
+  "projectedMonthly": 49.50000000000001,
+  "overrun": false,
+  "recommendations": []
+}

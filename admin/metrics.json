@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-10-07T16:27:00.679Z",
+  "requests": {
+    "total": 0,
+    "success": 0,
+    "errors": 0,
+    "errorRate": 0
+  },
+  "latency": {
+    "p50": 0,
+    "p95": 0,
+    "p99": 0,
+    "avg": 0
+  },
+  "endpoints": []
+}

@@ -1,0 +1,339 @@
+{
+  "timestamp": "2026-10-07T16:26:58.785Z",
+  "vulnerabilities": {
+    "critical": 0,
+    "high": 0,
+    "medium": 2,
+    "low": 5
+  },
+  "outdatedPackages": 0,
+  "licenseIssues": [],
+  "policies": {
+    "https": true,
+    "rls": true,
+    "cors": true,
+    "mfa": false
+  },
+  "sbom": {
+    "packages": [
+      {
+        "name": "@octokit/rest",
+        "version": "^22.0.1",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "@prisma/client",
+        "version": "^6.19.3",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "@supabase/supabase-js",
+        "version": "^2.117.2",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "commander",
+        "version": "^11.1.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "dotenv",
+        "version": "^18.0.5",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "zod",
+        "version": "^4.6.5",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "clsx",
+        "version": "^2.1.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "tailwind-merge",
+        "version": "^3.7.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "next",
+        "version": "^16.3.8",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "@axe-core/cli",
+        "version": "^4.8.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "@jest/globals",
+        "version": "^30.5.2",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "@lhci/cli",
+        "version": "^0.15.1",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "@playwright/test",
+        "version": "^1.63.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "@sentry/nextjs",
+        "version": "^10.75.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "@types/node",
+        "version": "^26.6.2",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "@types/pg",
+        "version": "^8.23.1",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "@typescript-eslint/eslint-plugin",
+        "version": "^8.71.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "@typescript-eslint/parser",
+        "version": "^8.70.1",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "depcheck",
+        "version": "^1.4.7",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "eslint-config-next",
+        "version": "^16.3.8",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "eslint-config-prettier",
+        "version": "^9.1.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "eslint-plugin-import",
+        "version": "^2.32.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "eslint-plugin-unused-imports",
+        "version": "^4.3.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "knip",
+        "version": "^6.39.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "madge",
+        "version": "^8.0.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "pa11y-ci",
+        "version": "^4.1.1",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "pg",
+        "version": "^8.23.1",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "prisma",
+        "version": "^6.19.3",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "supabase",
+        "version": "^2.119.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "ts-prune",
+        "version": "^0.10.3",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "tsx",
+        "version": "^4.23.15",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "typescript",
+        "version": "^5.9.3",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "vercel",
+        "version": "^59.23.1",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "wait-on",
+        "version": "^7.2.0",
+        "license": "Unknown",
+        "type": "npm"
+      },
+      {
+        "name": "watchdog",
+        "version": ">=6.0.0",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "pyyaml",
+        "version": ">=6.0.3",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "toml",
+        "version": ">=0.10.2",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "pytest",
+        "version": ">=7.0.0",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "pytest-cov",
+        "version": ">=4.0.0",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "fastapi",
+        "version": ">=0.141.1",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "sqlalchemy",
+        "version": ">=2.0.54",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "psycopg2-binary",
+        "version": ">=2.9.13",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "alembic",
+        "version": ">=1.20.0",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "python-multipart",
+        "version": ">=0.0.32",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "pydantic",
+        "version": ">=2.13.5",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "pydantic-settings",
+        "version": ">=2.15.0",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "websockets",
+        "version": ">=12.0",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "pytest-mock",
+        "version": ">=3.15.1",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "pytest-asyncio",
+        "version": ">=0.21.0",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "httpx",
+        "version": ">=0.25.0",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "psutil",
+        "version": ">=5.9.0",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "celery",
+        "version": ">=5.6.3",
+        "license": "Unknown",
+        "type": "pip"
+      },
+      {
+        "name": "redis",
+        "version": ">=8.1.0",
+        "license": "Unknown",
+        "type": "pip"
+      }
+    ]
+  }
+}
