@@ -142,7 +142,7 @@
   },
   "dependencies": {
     "@octokit/rest": "^22.0.1",
-    "@prisma/client": "^7.10.0",
+    "@prisma/client": "^6.19.3",
     "@supabase/supabase-js": "^2.117.2",
     "commander": "^11.1.0",
     "dotenv": "^18.0.5",
@@ -170,7 +170,7 @@
     "madge": "^8.0.0",
     "pa11y-ci": "^4.1.1",
     "pg": "^8.23.1",
-    "prisma": "^7.10.0",
+    "prisma": "^6.19.3",
     "supabase": "^2.119.0",
     "ts-prune": "^0.10.3",
     "tsx": "^4.23.15",

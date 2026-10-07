@@ -14,6 +14,13 @@ updates:
       # Revisit when typescript-eslint raises its peer range (github.com/typescript-eslint/typescript-eslint).
       - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
+      # Prisma 7 removed `url = env(...)` from schema files (P1012: datasource
+      # url must move to prisma.config.ts); the repo schema is not migrated yet.
+      # Revisit when adopting prisma.config.ts (pris.ly/d/config-datasource).
+      - dependency-name: "prisma"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@prisma/client"
+        update-types: ["version-update:semver-major"]
 
   # Python/pip dependencies
   - package-ecosystem: "pip"

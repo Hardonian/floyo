@@ -1,9 +1,9 @@
-// Prisma Schema with WASM support
-// This uses Prisma WASM for Termux/ARM64 compatibility
+// Prisma Schema
+// (The earlier `previewFeatures = ["wasm"]` was invalid for Prisma 6.x and
+// blocked `prisma generate`; the default engine works on ARM64/CI alike.)
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["wasm"]
 }
 
 datasource db {
@@ -13,40 +13,40 @@ datasource db {
 
 // User accounts
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  emailVerified Boolean   @default(false)
-  passwordHash  String?   // Nullable for OAuth users
+  id            String   @id @default(uuid())
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  passwordHash  String? // Nullable for OAuth users
   name          String?
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
   // Relations
-  events        Event[]
-  patterns      Pattern[]
-  relationships Relationship[]
-  sessions      Session[]
-  subscriptions Subscription[]
-  utmTracks     UTMTrack[]
-  cohorts       Cohort[]
-  privacyPrefs  PrivacyPrefs?
+  events         Event[]
+  patterns       Pattern[]
+  relationships  Relationship[]
+  sessions       Session[]
+  subscriptions  Subscription[]
+  utmTracks      UTMTrack[]
+  cohorts        Cohort[]
+  privacyPrefs   PrivacyPrefs?
   npsSubmissions NPSSubmission[]
-  
+
   @@index([email])
   @@map("users")
 }
 
 // Authentication sessions
 model Session {
-  id           String   @id @default(uuid())
-  userId       String
-  token        String   @unique
-  expiresAt    DateTime
-  createdAt    DateTime @default(now())
-  
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([token])
   @@map("sessions")
@@ -54,16 +54,16 @@ model Session {
 
 // File system events
 model Event {
-  id          String   @id @default(uuid())
-  userId      String
-  filePath    String
-  eventType   String   // created, modified, accessed, deleted
-  tool        String?
-  timestamp   DateTime @default(now())
-  metadata    Json?
-  
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  id        String   @id @default(uuid())
+  userId    String
+  filePath  String
+  eventType String // created, modified, accessed, deleted
+  tool      String?
+  timestamp DateTime @default(now())
+  metadata  Json?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId, timestamp])
   @@index([filePath])
   @@map("events")
@@ -71,16 +71,16 @@ model Event {
 
 // Detected patterns
 model Pattern {
-  id           String   @id @default(uuid())
-  userId       String
+  id            String   @id @default(uuid())
+  userId        String
   fileExtension String
-  count        Int      @default(0)
-  lastUsed     DateTime @default(now())
-  tools        String[]
-  updatedAt    DateTime @updatedAt
-  
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  count         Int      @default(0)
+  lastUsed      DateTime @default(now())
+  tools         String[]
+  updatedAt     DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, fileExtension])
   @@index([userId])
   @@map("patterns")
@@ -96,9 +96,9 @@ model Relationship {
   weight       Float    @default(1.0)
   lastSeen     DateTime @default(now())
   updatedAt    DateTime @updatedAt
-  
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, sourceFile, targetFile])
   @@index([userId])
   @@map("relationships")
@@ -106,38 +106,40 @@ model Relationship {
 
 // Subscriptions and billing
 model Subscription {
-  id            String   @id @default(uuid())
-  userId        String   @unique
-  plan          String   @default("free") // free, pro, enterprise
-  status        String   @default("active") // active, canceled, past_due
-  stripeId      String?  @unique
+  id                 String    @id @default(uuid())
+  userId             String    @unique
+  plan               String    @default("free") // free, pro, enterprise
+  status             String    @default("active") // active, canceled, past_due
+  stripeId           String?   @unique
   currentPeriodStart DateTime?
   currentPeriodEnd   DateTime?
-  cancelAtPeriodEnd Boolean @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  cancelAtPeriodEnd  Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+
   @@index([userId])
   @@map("subscriptions")
 }
 
 // UTM tracking for growth
 model UTMTrack {
-  id          String   @id @default(uuid())
-  userId      String
-  source      String?
-  medium      String?
-  campaign    String?
-  term        String?
-  content     String?
-  firstTouch  Boolean  @default(true)
-  lastTouch   Boolean  @default(false)
-  timestamp   DateTime @default(now())
-  
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  id         String   @id @default(uuid())
+  userId     String
+  source     String?
+  medium     String?
+  campaign   String?
+  term       String?
+  content    String?
+  firstTouch Boolean  @default(true)
+  lastTouch  Boolean  @default(false)
+  timestamp  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId, timestamp])
   @@index([campaign])
   @@map("utm_tracks")
@@ -147,12 +149,12 @@ model UTMTrack {
 model Cohort {
   id          String   @id @default(uuid())
   userId      String
-  cohortMonth String   // YYYY-MM
+  cohortMonth String // YYYY-MM
   acquiredAt  DateTime
   createdAt   DateTime @default(now())
-  
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, cohortMonth])
   @@index([cohortMonth])
   @@map("cohorts")
@@ -167,40 +169,40 @@ model FeatureFlag {
   metadata    Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   @@map("feature_flags")
 }
 
 // Pricing offers
 model Offer {
-  id          String   @id @default(uuid())
-  key         String   @unique
+  id          String    @id @default(uuid())
+  key         String    @unique
   name        String
   description String?
-  planType    String   // free, pro, enterprise
-  discount    Float?   // Percentage discount
+  planType    String // free, pro, enterprise
+  discount    Float? // Percentage discount
   validFrom   DateTime
   validTo     DateTime?
-  enabled     Boolean  @default(true)
+  enabled     Boolean   @default(true)
   metadata    Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
   @@map("offers")
 }
 
 // Audit logs for compliance
 model AuditLog {
-  id          String   @id @default(uuid())
-  userId      String?
-  action      String
-  resource    String?
-  resourceId  String?
-  metadata    Json?
-  ipAddress   String?
-  userAgent   String?
-  timestamp   DateTime @default(now())
-  
+  id         String   @id @default(uuid())
+  userId     String?
+  action     String
+  resource   String?
+  resourceId String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  timestamp  DateTime @default(now())
+
   @@index([userId, timestamp])
   @@index([action])
   @@map("audit_logs")
@@ -208,85 +210,85 @@ model AuditLog {
 
 // Data retention policies
 model RetentionPolicy {
-  id          String   @id @default(uuid())
-  tableName   String
+  id            String    @id @default(uuid())
+  tableName     String
   retentionDays Int
-  enabled     Boolean  @default(true)
-  lastRun     DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  enabled       Boolean   @default(true)
+  lastRun       DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
   @@unique([tableName])
   @@map("retention_policies")
 }
 
 // Privacy-first monitoring tables
 model PrivacyPrefs {
-  id                  String    @id @default(uuid())
-  userId              String    @unique
-  consentGiven        Boolean   @default(false)
-  dataRetentionDays   Int       @default(14)
-  mfaRequired         Boolean   @default(true)
-  lastReviewedAt      DateTime?
-  monitoringEnabled   Boolean   @default(false)
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-  
-  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  appAllowlists       AppAllowlist[]
-  signalToggles       SignalToggle[]
-  telemetryEvents     TelemetryEvent[]
-  transparencyLogs    PrivacyTransparencyLog[]
-  
+  id                String    @id @default(uuid())
+  userId            String    @unique
+  consentGiven      Boolean   @default(false)
+  dataRetentionDays Int       @default(14)
+  mfaRequired       Boolean   @default(true)
+  lastReviewedAt    DateTime?
+  monitoringEnabled Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  user             User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appAllowlists    AppAllowlist[]
+  signalToggles    SignalToggle[]
+  telemetryEvents  TelemetryEvent[]
+  transparencyLogs PrivacyTransparencyLog[]
+
   @@index([userId])
   @@map("privacy_prefs")
 }
 
 model AppAllowlist {
-  id          String   @id @default(uuid())
-  userId      String
-  appId       String
-  appName     String
-  enabled     Boolean  @default(false)
-  scope       String   @default("metadata_only") // metadata_only, metadata_plus_usage, none
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  user        PrivacyPrefs @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  
+  id        String   @id @default(uuid())
+  userId    String
+  appId     String
+  appName   String
+  enabled   Boolean  @default(false)
+  scope     String   @default("metadata_only") // metadata_only, metadata_plus_usage, none
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user PrivacyPrefs @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
   @@unique([userId, appId])
   @@index([userId])
   @@map("app_allowlist")
 }
 
 model SignalToggle {
-  id            String   @id @default(uuid())
-  userId        String
-  signalKey     String   // e.g., window_titles, durations, focus_switches
-  enabled       Boolean  @default(false)
-  samplingRate  Float    @default(1.0) // 0.0 to 1.0
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  user          PrivacyPrefs @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  
+  id           String   @id @default(uuid())
+  userId       String
+  signalKey    String // e.g., window_titles, durations, focus_switches
+  enabled      Boolean  @default(false)
+  samplingRate Float    @default(1.0) // 0.0 to 1.0
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user PrivacyPrefs @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
   @@unique([userId, signalKey])
   @@index([userId])
   @@map("signal_toggles")
 }
 
 model TelemetryEvent {
-  id                  String   @id @default(uuid())
-  userId              String
-  timestamp           DateTime @default(now())
-  appId               String
-  eventType           String   // focus_switch, duration, window_title_change, etc.
-  durationMs          Int?
-  metadataRedactedJson Json?  // Encrypted/redacted metadata
-  createdAt           DateTime @default(now())
-  
-  user                PrivacyPrefs @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  
+  id                   String   @id @default(uuid())
+  userId               String
+  timestamp            DateTime @default(now())
+  appId                String
+  eventType            String // focus_switch, duration, window_title_change, etc.
+  durationMs           Int?
+  metadataRedactedJson Json? // Encrypted/redacted metadata
+  createdAt            DateTime @default(now())
+
+  user PrivacyPrefs @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
   @@index([userId, timestamp])
   @@index([appId])
   @@index([timestamp])
@@ -294,18 +296,18 @@ model TelemetryEvent {
 }
 
 model PrivacyTransparencyLog {
-  id              String   @id @default(uuid())
-  userId          String
-  action          String   // consent_given, consent_revoked, app_enabled, app_disabled, signal_toggled, export_requested, delete_requested, data_accessed, policy_changed
-  resource        String?  // app_id, signal_key, etc.
-  resourceId      String?
-  oldValueHash    String?  // Hash of old state before change
-  newValueHash    String?  // Hash of new state after change
-  metadata        Json?
-  timestamp       DateTime @default(now())
-  
-  user            PrivacyPrefs @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  
+  id           String   @id @default(uuid())
+  userId       String
+  action       String // consent_given, consent_revoked, app_enabled, app_disabled, signal_toggled, export_requested, delete_requested, data_accessed, policy_changed
+  resource     String? // app_id, signal_key, etc.
+  resourceId   String?
+  oldValueHash String? // Hash of old state before change
+  newValueHash String? // Hash of new state after change
+  metadata     Json?
+  timestamp    DateTime @default(now())
+
+  user PrivacyPrefs @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
   @@index([userId, timestamp])
   @@index([action])
   @@index([timestamp])
@@ -313,12 +315,12 @@ model PrivacyTransparencyLog {
 }
 
 model MfaEnforcedSession {
-  id              String   @id @default(uuid())
-  userId          String
-  sessionToken    String   @unique
-  expiresAt       DateTime
-  createdAt       DateTime @default(now())
-  
+  id           String   @id @default(uuid())
+  userId       String
+  sessionToken String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
   @@index([userId])
   @@index([sessionToken])
   @@index([expiresAt])
@@ -328,19 +330,19 @@ model MfaEnforcedSession {
 // Extended tables (referenced in migrations)
 // Organizations
 model Organization {
-  id          String   @id @default(uuid())
-  name        String
-  slug        String   @unique
-  plan        String   @default("free") // free, pro, enterprise
-  settings    Json?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  members     OrganizationMember[]
-  workflows   Workflow[]
-  integrations UserIntegration[]
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  plan      String   @default("free") // free, pro, enterprise
+  settings  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members       OrganizationMember[]
+  workflows     Workflow[]
+  integrations  UserIntegration[]
   subscriptions Subscription[]
-  
+
   @@index([slug])
   @@map("organizations")
 }
@@ -350,11 +352,11 @@ model OrganizationMember {
   organizationId String
   userId         String
   role           String   @default("member") // owner, admin, member
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
   @@unique([organizationId, userId])
   @@index([userId])
   @@index([organizationId])
@@ -368,14 +370,15 @@ model Workflow {
   organizationId String?
   name           String
   description    String?
-  definition     Json     // Workflow definition/configuration
+  definition     Json // Workflow definition/configuration
   isActive       Boolean  @default(true)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
-  
-  versions       WorkflowVersion[]
-  executions     WorkflowExecution[]
-  
+
+  versions     WorkflowVersion[]
+  executions   WorkflowExecution[]
+  organization Organization?       @relation(fields: [organizationId], references: [id])
+
   @@index([userId])
   @@index([organizationId])
   @@index([isActive])
@@ -383,31 +386,31 @@ model Workflow {
 }
 
 model WorkflowVersion {
-  id          String   @id @default(uuid())
-  workflowId  String
-  version     Int
-  definition  Json
-  createdAt   DateTime @default(now())
-  
-  workflow    Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  
+  id         String   @id @default(uuid())
+  workflowId String
+  version    Int
+  definition Json
+  createdAt  DateTime @default(now())
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
   @@unique([workflowId, version])
   @@index([workflowId])
   @@map("workflow_versions")
 }
 
 model WorkflowExecution {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   workflowId  String
-  status      String   @default("pending") // pending, running, completed, failed
+  status      String    @default("pending") // pending, running, completed, failed
   input       Json?
   output      Json?
   error       String?
-  startedAt   DateTime @default(now())
+  startedAt   DateTime  @default(now())
   completedAt DateTime?
-  
-  workflow    Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  
+
+  workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
   @@index([workflowId])
   @@index([status])
   @@index([startedAt])
@@ -416,17 +419,18 @@ model WorkflowExecution {
 
 // User Integrations
 model UserIntegration {
-  id             String   @id @default(uuid())
+  id             String        @id @default(uuid())
   userId         String?
   organizationId String?
-  provider       String   // zapier, tiktok, meta, shopify, etc.
+  provider       String // zapier, tiktok, meta, shopify, etc.
   name           String
-  config         Json     // Encrypted configuration/credentials
-  isActive       Boolean  @default(true)
+  config         Json // Encrypted configuration/credentials
+  isActive       Boolean       @default(true)
   lastSyncAt     DateTime?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
   @@index([userId])
   @@index([organizationId])
   @@index([provider])
@@ -436,11 +440,11 @@ model UserIntegration {
 
 // Metrics Log (referenced in migrations)
 model MetricsLog {
-  id          String   @id @default(uuid())
-  source      String   // system, zapier, etc.
-  metric      Json     // Metric data
-  createdAt   DateTime @default(now())
-  
+  id        String   @id @default(uuid())
+  source    String // system, zapier, etc.
+  metric    Json // Metric data
+  createdAt DateTime @default(now())
+
   @@index([source])
   @@index([createdAt])
   @@map("metrics_log")
@@ -450,13 +454,13 @@ model MetricsLog {
 model NPSSubmission {
   id          String   @id @default(uuid())
   userId      String
-  score       Int      // 0-10
+  score       Int // 0-10
   feedback    String?
-  category    String   // promoter, passive, detractor
+  category    String // promoter, passive, detractor
   submittedAt DateTime @default(now())
-  
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId])
   @@index([submittedAt])
   @@index([category])
