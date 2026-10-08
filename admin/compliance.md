@@ -1,6 +1,6 @@
 # Security & Compliance Report
 
-Generated: 2026-10-07T16:26:58.785Z
+Generated: 2026-10-08T12:35:45.393Z
 
 ## Vulnerabilities
 - Critical: 0
