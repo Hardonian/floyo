@@ -4,4 +4,4 @@
 # the backend falls back gracefully when they are absent.
 tensorflow>=2.13.0  # or tensorflow-cpu for CPU-only environments
 transformers>=5.17.0  # For transformer models
-torch>=2.14.0  # Alternative to TensorFlow, required by transformers
+torch>=2.14.1  # Alternative to TensorFlow, required by transformers
