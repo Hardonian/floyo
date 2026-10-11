@@ -30,6 +30,12 @@ jobs:
       
       - name: Create Backup
         run: |
+          DB_HOST=$(node -e "console.log(new URL(process.env.DATABASE_URL).hostname)")
+          if ! getent hosts "$DB_HOST" >/dev/null 2>&1; then
+            echo "::notice::DATABASE_URL host '$DB_HOST' does not resolve (stale or paused database) - backup skipped; rotate the DATABASE_URL secret to re-enable"
+            echo "Backup skipped: database host $DB_HOST unreachable" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           if [ "$HAS_SNAPSHOT_KEY" = "true" ]; then
             npm run ops:snapshot -- --encrypt
           else
@@ -56,8 +62,12 @@ jobs:
       - name: Cleanup Old Backups
         run: |
           # Keep only last 7 days of backups locally
-          find ops/snapshots -name "*.encrypted" -mtime +7 -delete
-          find ops/snapshots -name "*.metadata.json" -mtime +7 -delete
+          if [ -d ops/snapshots ]; then
+            find ops/snapshots -name "*.encrypted" -mtime +7 -delete
+            find ops/snapshots -name "*.metadata.json" -mtime +7 -delete
+          else
+            echo "::notice::ops/snapshots does not exist (backup skipped) - nothing to clean up"
+          fi
       
       - name: Notify on Failure
         if: failure() && env.HAS_BACKUP_WEBHOOK == 'true'

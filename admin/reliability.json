@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-10-09T18:01:17.250Z",
+  "latency": {
+    "p50": 0,
+    "p95": 0,
+    "p99": 0
+  },
+  "buildTime": {
+    "total": 180,
+    "frontend": 120,
+    "backend": 60
+  },
+  "payloadSize": {
+    "frontend": 512000,
+    "api": 51200
+  },
+  "errorRate": 0,
+  "uptime": 99.9,
+  "regressions": []
+}

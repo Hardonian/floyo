@@ -15,10 +15,10 @@ jobs:
       - run: npm ci
       - name: Generate Meta Audit (reports + preview patches only)
         run: |
-          node scripts/meta-architect/scan.js
-          node scripts/meta-architect/depgraph.js
-          node scripts/meta-architect/api-inventory.js
-          node scripts/meta-architect/plan.js
+          node scripts/meta-architect/scan.cjs
+          node scripts/meta-architect/depgraph.cjs
+          node scripts/meta-architect/api-inventory.cjs
+          node scripts/meta-architect/plan.cjs
       - uses: actions/upload-artifact@v4
         with:
           name: meta-audit-artifacts

@@ -3,7 +3,7 @@
  * Monitors latency, build time, payload size, error frequency
  */
 
-import { writeFileSync, existsSync, readFileSync } from 'fs';
+import { writeFileSync, existsSync, readFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import type { RepoContext } from './repo-context.js';
 
@@ -95,7 +95,7 @@ export class ReliabilityAgent {
     // Ensure admin directory exists
     const adminDir = join(this.workspacePath, 'admin');
     if (!existsSync(adminDir)) {
-      require('fs').mkdirSync(adminDir, { recursive: true });
+      mkdirSync(adminDir, { recursive: true });
     }
 
     writeFileSync(

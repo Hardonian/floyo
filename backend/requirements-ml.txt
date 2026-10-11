@@ -1,0 +1,7 @@
+# Optional Machine Learning & Data Science stack (heavy: pulls CUDA wheels).
+# Installed by Dockerfile.backend for production; CI installs only the base
+# requirements.txt because these packages exceed the GitHub runner's disk and
+# the backend falls back gracefully when they are absent.
+tensorflow>=2.13.0  # or tensorflow-cpu for CPU-only environments
+transformers>=5.17.0  # For transformer models
+torch>=2.14.1  # Alternative to TensorFlow, required by transformers

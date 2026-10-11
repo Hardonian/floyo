@@ -38,6 +38,9 @@ jobs:
         run: npx prisma format --schema=prisma/schema.prisma
 
       - name: Validate Prisma schema
+        env:
+          # validate resolves the datasource env var but never connects
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://user:pass@localhost:5432/validate-only' }}
         run: npx prisma validate --schema=prisma/schema.prisma
 
       - name: Check for schema drift

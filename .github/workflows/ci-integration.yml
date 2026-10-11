@@ -61,7 +61,7 @@ jobs:
           npm ci
 
       - name: Setup Prisma
-        run: npx prisma generate
+        run: npx prisma@6 generate
 
       - name: Initialize database
         env:
@@ -169,6 +169,7 @@ jobs:
         env:
           API_BASE_URL: http://localhost:8000
           DATABASE_URL: postgresql://floyo:floyo@localhost:5432/floyo
+          SECRET_KEY: test-secret-key-for-ci
         run: |
           tsx tools/wiring/harness.ts || exit 1
 
