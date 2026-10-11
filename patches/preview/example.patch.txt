@@ -1,0 +1,2 @@
+// [META-AUDIT:SUGGESTION]
+// Consider setting runtime="edge" for light API routes; add zod validation + rate-limit.
