@@ -36,7 +36,7 @@ celery>=5.6.3
 flower>=2.2.0
 
 # Testing
-faker>=40.41.0
+faker>=40.43.0
 pytest-asyncio>=0.21.1
 
 # Workflow scheduling
