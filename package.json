@@ -145,7 +145,7 @@
     "@prisma/client": "^6.19.3",
     "@supabase/supabase-js": "^2.117.3",
     "commander": "^11.1.0",
-    "dotenv": "^18.0.5",
+    "dotenv": "^18.0.7",
     "zod": "^4.6.5",
     "clsx": "^2.1.0",
     "tailwind-merge": "^3.7.0",
