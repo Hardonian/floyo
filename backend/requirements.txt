@@ -80,7 +80,7 @@ python-dateutil>=2.9.0.post0
 pytz>=2026.5
 
 # Additional SQLAlchemy utilities
-sqlalchemy-utils>=0.42.1
+sqlalchemy-utils>=0.43.0
 
 # PostgreSQL driver for SQLAlchemy 2.x (its default postgresql:// dialect is
 # the psycopg (v3) driver; psycopg2-binary alone makes create_engine fail)
