@@ -20,7 +20,7 @@ httpx>=0.28.1
 
 # passlib 1.7.4 is incompatible with bcrypt>=4.1 (removed __about__ attr);
 # pin bcrypt below 4.1 or password hashing raises MissingBackendError.
-bcrypt>=3.1.0,<4.1
+bcrypt>=5.0.0,<5.1
 
 # Logging & Monitoring
 sentry-sdk[fastapi]>=2.71.0
