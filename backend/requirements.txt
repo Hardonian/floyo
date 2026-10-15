@@ -84,4 +84,4 @@ sqlalchemy-utils>=0.43.0
 
 # PostgreSQL driver for SQLAlchemy 2.x (its default postgresql:// dialect is
 # the psycopg (v3) driver; psycopg2-binary alone makes create_engine fail)
-psycopg[binary]>=3.2.0
+psycopg[binary]>=3.3.6
