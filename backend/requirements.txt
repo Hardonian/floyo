@@ -1,5 +1,5 @@
 # Backend API Dependencies
-fastapi>=0.142.2
+fastapi>=0.143.0
 uvicorn[standard]>=0.54.0
 sqlalchemy>=2.0.54
 psycopg2-binary>=2.9.13
@@ -7,7 +7,7 @@ alembic>=1.20.0
 python-jose[cryptography]>=3.5.0
 passlib[bcrypt]>=1.7.4
 python-multipart>=0.0.32
-pydantic>=2.13.5
+pydantic>=2.14.0
 pydantic-settings>=2.15.0
 websockets>=16.0
 
@@ -20,7 +20,7 @@ httpx>=0.28.1
 
 # passlib 1.7.4 is incompatible with bcrypt>=4.1 (removed __about__ attr);
 # pin bcrypt below 4.1 or password hashing raises MissingBackendError.
-bcrypt>=3.1.0,<4.1
+bcrypt>=5.0.0,<5.1
 
 # Logging & Monitoring
 sentry-sdk[fastapi]>=2.71.0
@@ -36,7 +36,7 @@ celery>=5.6.3
 flower>=2.2.0
 
 # Testing
-faker>=40.41.0
+faker>=40.43.0
 pytest-asyncio>=0.21.1
 
 # Workflow scheduling
@@ -45,7 +45,7 @@ croniter>=6.2.4
 # Security
 pyotp>=2.10.0
 qrcode[pil]>=8.2
-cryptography>=50.0.1
+cryptography>=50.0.2
 
 # Auth (imported as `jwt` in backend/auth)
 pyjwt>=2.15.1
@@ -73,15 +73,15 @@ requests>=2.34.2
 stripe>=16.0.0  # Optional but recommended for Stripe webhooks
 
 # Async HTTP (optional, for async HTTP requests)
-aiohttp>=3.14.3
+aiohttp>=3.14.4
 
 # Date/Time utilities
 python-dateutil>=2.9.0.post0
 pytz>=2026.5
 
 # Additional SQLAlchemy utilities
-sqlalchemy-utils>=0.42.1
+sqlalchemy-utils>=0.43.0
 
 # PostgreSQL driver for SQLAlchemy 2.x (its default postgresql:// dialect is
 # the psycopg (v3) driver; psycopg2-binary alone makes create_engine fail)
-psycopg[binary]>=3.2.0
+psycopg[binary]>=3.3.6
