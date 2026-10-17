@@ -19,11 +19,20 @@ on:
     types: [labeled]
     # Only trigger on canary label
     # Note: This is a stub - actual implementation requires label check
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.vscode/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   canary-deploy:
     name: Canary Deploy (${{ github.event.inputs.module || 'checkout' }})
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.event.label.name == 'canary/deploy' || github.event_name == 'workflow_dispatch'
     environment:
       name: canary-${{ github.event.inputs.module || 'checkout' }}
@@ -101,6 +110,7 @@ jobs:
   canary-rollback:
     name: Canary Rollback
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.event.label.name == 'canary/rollback' || contains(github.event.head_commit.message, '[canary:rollback]')
     
     steps:

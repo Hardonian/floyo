@@ -3,8 +3,12 @@ name: CI Performance & Security
 on:
   schedule:
     # Weekly performance audit - Monday at 3 AM UTC
-    - cron: '0 3 * * 1'
+    - cron: '0 6 * * 1'  # weekly Mon 06:00 UTC
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   lighthouse:

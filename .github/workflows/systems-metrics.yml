@@ -3,12 +3,17 @@ name: Systems Metrics Snapshot
 on:
   schedule:
     # Every Monday at 04:40 UTC
-    - cron: '40 4 * * 1'
+    - cron: '0 6 * * 1'  # weekly Mon 06:00 UTC
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   systems-metrics:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     
     steps:
       - name: Checkout code

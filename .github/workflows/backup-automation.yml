@@ -2,13 +2,18 @@ name: Automated Daily Backups
 
 on:
   schedule:
-    - cron: '0 2 * * *' # 2 AM UTC daily
+    - cron: '0 6 * * 1'  # weekly Mon 06:00 UTC
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   backup:
     name: Create Database Backup
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: production
     env:
       HAS_AWS: ${{ secrets.AWS_ACCESS_KEY_ID != '' && secrets.S3_BACKUP_BUCKET != '' }}

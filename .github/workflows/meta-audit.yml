@@ -4,9 +4,14 @@ on:
   push: { tags: [ 'v*' ] }
   workflow_dispatch:
 permissions: { contents: write, pull-requests: write }
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   meta-audit:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env: { NEXT_TELEMETRY_DISABLED: 1, ANALYZE: 'false' }
     steps:
       - uses: actions/checkout@v4

@@ -3,15 +3,24 @@ name: Performance Tests
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.vscode/**'
   pull_request:
     branches: [main]
     paths:
       - 'frontend/**'
       - 'backend/**'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   performance:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     
     steps:
       - uses: actions/checkout@v4

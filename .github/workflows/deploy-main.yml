@@ -18,9 +18,14 @@ on:
     # push:
     #   branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: production
     # DISABLED: This workflow is deprecated
     if: false

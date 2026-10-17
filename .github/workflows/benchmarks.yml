@@ -3,12 +3,17 @@ name: Weekly Benchmarks
 on:
   schedule:
     # Every Monday at 04:20 UTC
-    - cron: '20 4 * * 1'
+    - cron: '0 6 * * 1'  # weekly Mon 06:00 UTC
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   benchmark:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     
     steps:
       - name: Checkout code

@@ -10,10 +10,15 @@ on:
         description: 'Version tag (e.g., v1.0.0)'
         required: true
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   generate-changelog:
     name: Generate Changelog
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: read

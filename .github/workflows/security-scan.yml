@@ -3,14 +3,28 @@ name: Security Scanning
 on:
   push:
     branches: [main, develop]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.vscode/**'
   pull_request:
     branches: [main, develop]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.vscode/**'
   schedule:
-    - cron: '0 0 * * 0'  # Weekly
+    - cron: '0 6 * * 1'  # weekly Mon 06:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   security-scan:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     
     steps:
       - uses: actions/checkout@v4

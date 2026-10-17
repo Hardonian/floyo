@@ -3,13 +3,18 @@ name: Stale PR & Branch Cleanup
 on:
   schedule:
     # Every Monday at 2 AM UTC
-    - cron: '0 2 * * 1'
+    - cron: '0 6 * * 1'  # weekly Mon 06:00 UTC
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   stale-prs:
     name: Mark Stale PRs
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       issues: write
       pull-requests: write
@@ -35,6 +40,7 @@ jobs:
   stale-branches:
     name: Cleanup Stale Branches
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:

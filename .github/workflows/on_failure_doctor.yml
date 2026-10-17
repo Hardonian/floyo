@@ -7,10 +7,15 @@ on:
       - "Data Quality (Nightly)"
       - "Orchestrate (Diagnose → Fix → Deploy)"
     types: [completed]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   heal:
     if: ${{ github.event.workflow_run.conclusion != 'success' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       HAS_SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL != '' }}
     steps:

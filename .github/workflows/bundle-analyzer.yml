@@ -3,11 +3,16 @@ name: Bundle Analyzer CI
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * 0' # Weekly on Sunday
+    - cron: '0 6 * * 1'  # weekly Mon 06:00 UTC
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   analyze:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -2,12 +2,25 @@ name: Vercel Guard
 
 on:
   pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.vscode/**'
   push:
     branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - '.vscode/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   guard:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     name: Vercel Hardening Validation
     
     steps:

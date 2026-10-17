@@ -25,9 +25,14 @@ on:
           - preview
           - production
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment: production
     env:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}

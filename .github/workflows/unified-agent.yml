@@ -2,18 +2,7 @@ name: Unified Agent System
 
 on:
   schedule:
-    # Run reliability agent every 6 hours
-    - cron: '0 */6 * * *'
-    # Run cost agent daily at midnight
-    - cron: '0 0 * * *'
-    # Run security agent every 12 hours
-    - cron: '0 */12 * * *'
-    # Run documentation agent every 4 hours
-    - cron: '0 */4 * * *'
-    # Run planning agent weekly on Monday
-    - cron: '0 0 * * 1'
-    # Run reflection agent daily at 2 AM
-    - cron: '0 2 * * *'
+    - cron: '0 6 * * 1'  # weekly Mon 06:00 UTC
   workflow_dispatch:
     inputs:
       agent:
@@ -29,9 +18,14 @@ on:
           - planning
           - reflection
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   unified-agent:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
       pull-requests: write

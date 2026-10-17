@@ -2,9 +2,14 @@ name: Post-Deploy Verify (Supabase & DQ)
 on:
   push: { branches: [ main ] }
   workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions: { contents: read, actions: read }
     env:
       HAS_SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL != '' }}
