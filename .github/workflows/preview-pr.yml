@@ -21,6 +21,7 @@ jobs:
   preview:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    if: github.actor != 'github-actions[bot]' && github.actor != 'dependabot[bot]'
     permissions:
       contents: read
       pull-requests: write
