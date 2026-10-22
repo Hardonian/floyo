@@ -6,7 +6,7 @@ pytest>=7.0.0
 pytest-cov>=4.0.0
 
 # Backend API dependencies
-fastapi>=0.143.0
+fastapi>=0.143.3
 uvicorn[standard]>=0.54.0
 sqlalchemy>=2.0.54
 psycopg2-binary>=2.9.13
