@@ -23,7 +23,7 @@ httpx>=0.28.1
 bcrypt>=5.0.0,<5.1
 
 # Logging & Monitoring
-sentry-sdk[fastapi]>=2.72.0
+sentry-sdk[fastapi]>=2.73.0
 psutil>=7.2.2
 
 # Rate Limiting & Caching
