@@ -2,7 +2,7 @@
 watchdog>=6.0.0
 pyyaml>=6.0.3
 toml>=0.10.2
-pytest>=7.0.0
+pytest>=9.2.0
 pytest-cov>=4.0.0
 
 # Backend API dependencies
