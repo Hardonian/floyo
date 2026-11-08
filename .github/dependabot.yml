@@ -32,24 +32,6 @@ updates:
     open-pull-requests-limit: 10
 
   # Go modules
-  - package-ecosystem: "gomod"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    commit-message:
-      prefix: "deps"
-    open-pull-requests-limit: 10
-
-  # Maven dependencies
-  - package-ecosystem: "maven"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    commit-message:
-      prefix: "deps"
-    open-pull-requests-limit: 10
-
-  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
