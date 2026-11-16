@@ -154,7 +154,7 @@
   "devDependencies": {
     "@axe-core/cli": "^4.14.0",
     "@jest/globals": "^30.5.2",
-    "@lhci/cli": "^0.16.0",
+    "@lhci/cli": "^0.16.1",
     "@playwright/test": "^1.65.0",
     "@sentry/nextjs": "^11.11.0",
     "@types/node": "^26.6.6",
