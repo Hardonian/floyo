@@ -88,6 +88,11 @@
   },
   "overrides": {
     "glob": ">=10.4.5",
+    "del": {
+      "globby": {
+        "glob": "7.2.3"
+      }
+    },
     "js-yaml": ">=3.14.1",
     "lodash": ">=4.17.21",
     "picomatch": ">=2.3.1",

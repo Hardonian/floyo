@@ -27,7 +27,9 @@ jobs:
         run: |
           cd frontend
           npm ci
-          npm install --save-dev @next/bundle-analyzer
+          # Pin to the Next 16 release line; unpinned latest can install a
+          # bundle-analyzer/next-pwa combination that breaks next.config.js.
+          npm install --save-dev @next/bundle-analyzer@16.4.6
 
       - name: Build with analyzer
         run: |
